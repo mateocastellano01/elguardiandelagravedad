@@ -572,10 +572,30 @@
 }
 
   </style>
+
+@keyframes vientoAparecer {
+  from {
+    opacity: 0;
+    transform: translateX(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.viento {
+  opacity: 0;
+  animation: vientoAparecer 1.8s ease-out forwards;
+}
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.6s; }
+.delay-3 { animation-delay: 1s; }
+.delay-4 { animation-delay: 1.4s; }
+
 </head>
 
 <body>
-  <nav class="top-nav">
+  <nav class="top-nav viento delay-4"">
     <ul>
        <li><a href="#bitacora">Bitácora / Noticias</a></li>
        <li><a href="#proyecto">Proyecto</a></li>
@@ -592,13 +612,13 @@
     >
 
     <div class="hero">
-      <h1>EL GUARDIÁN DE LA GRAVEDAD</h1>
+      <h1 class="viento delay-1">EL GUARDIÁN DE LA GRAVEDAD</h1>
 
-      <p class="tagline">
+      <p class="tagline viento delay-2">
         El peso de una RESPONSABILIDAD, frente a los ojos de un DESTINO.
       </p>
 
-      <div class="contador">
+      <div class="contador viento delay-3">
         Lanzamiento — <span id="tiempo"></span>
       </div>
     </div>
