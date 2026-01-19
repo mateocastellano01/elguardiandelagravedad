@@ -590,6 +590,18 @@
 .delay-4 { animation-delay: 1.4s; }
 .delay-5 { animation-delay: 1.9s; }
 
+.flip {
+  display: inline-block;
+  overflow: hidden;
+  height: 1.4em;
+  width: 2ch;
+  position: relative;
+}
+
+.flip span {
+  display: block;
+}
+
 @keyframes fichaCaer {
   from {
     transform: translateY(-100%);
@@ -605,17 +617,6 @@
   animation: fichaCaer 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-.flip {
-  display: inline-block;
-  overflow: hidden;
-  height: 1.4em;
-  width: 2ch;
-  position: relative;
-}
-
-.flip span {
-  display: block;
-}
 
   </style>
 
