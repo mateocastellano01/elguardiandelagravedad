@@ -590,6 +590,29 @@
 .delay-4 { animation-delay: 1.4s; }
 .delay-5 { animation-delay: 1.9s; }
 
+.flip {
+  display: inline-block;
+  overflow: hidden;
+  height: 1.4em;
+  width: 2ch;
+  position: relative;
+}
+
+.flip span {
+  display: block;
+}
+
+@keyframes fichaCaer {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
   </style>
 
 
@@ -622,6 +645,29 @@
       <div class="contador viento delay-5">
         Lanzamiento — <span id="tiempo"></span>
       </div>
+
+      <div class="flip">
+    <span id="dias"></span>
+      </div>
+
+  <span class="separador">:</span>
+
+  <div class="flip">
+    <span id="horas"></span>
+  </div>
+
+  <span class="separador">:</span>
+
+  <div class="flip">
+    <span id="minutos"></span>
+  </div>
+
+  <span class="separador">:</span>
+
+  <div class="flip">
+    <span id="segundos"></span>
+  </div>
+
     </div>
   </header>
 
@@ -806,30 +852,58 @@
 
   <footer>
     Mateo Castellano — Licenciatura en Artes Visuales
+    Contacto: mateocastellano01@gmail.com
+    Instagram: @mat.bitacora.alien
   </footer>
 
   <script>
-    const lanzamiento = new Date("March 20, 2026 00:00:00").getTime();
 
-    function actualizarContador() {
-      const ahora = new Date().getTime();
-      const distancia = lanzamiento - ahora;
+  const lanzamiento = new Date("March 20, 2026 00:00:00").getTime();
 
-      if (distancia < 0) {
-        document.getElementById("tiempo").innerHTML = "Disponible";
-        return;
-      }
+  const diasSpan = document.getElementById("dias");
+  const horasSpan = document.getElementById("horas");
+  const minutosSpan = document.getElementById("minutos");
+  const segundosSpan = document.getElementById("segundos");
 
-      const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-      const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+  function animarFicha(span, valor) {
+    span.textContent = valor;
+    span.classList.remove("ficha");
+    void span.offsetWidth; // reinicia animación
+    span.classList.add("ficha");
+  }
 
-      document.getElementById("tiempo").innerHTML =
-        dias + "d " + horas + "h " + minutos + "m " + segundos + "s";
+  function actualizarContador() {
+    const ahora = new Date().getTime();
+    const distancia = lanzamiento - ahora;
+
+    if (distancia < 0) {
+      diasSpan.textContent = "00";
+      horasSpan.textContent = "00";
+      minutosSpan.textContent = "00";
+      segundosSpan.textContent = "00";
+      return;
     }
 
-    setInterval(actualizarContador, 1000);
+    const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+    const horas = Math.floor(
+      (distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutos = Math.floor(
+      (distancia % (1000 * 60 * 60)) / (1000 * 60)
+    );
+    const segundos = Math.floor(
+      (distancia % (1000 * 60)) / 1000
+    );
+
+    animarFicha(diasSpan, dias.toString().padStart(2, "0"));
+    animarFicha(horasSpan, horas.toString().padStart(2, "0"));
+    animarFicha(minutosSpan, minutos.toString().padStart(2, "0"));
+    animarFicha(segundosSpan, segundos.toString().padStart(2, "0"));
+  }
+
+  actualizarContador();
+  setInterval(actualizarContador, 1000);
+
   </script>
 
 </body>
