@@ -583,12 +583,27 @@
 .viento {
   opacity: 0;
   animation: vientoAparecer 1.8s ease-out forwards;
-}
+
 .delay-1 { animation-delay: 0.2s; }
 .delay-2 { animation-delay: 0.6s; }
 .delay-3 { animation-delay: 1s; }
 .delay-4 { animation-delay: 1.4s; }
 .delay-5 { animation-delay: 1.9s; }
+
+@keyframes fichaCaer {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ficha {
+  animation: fichaCaer 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
 
 .flip {
   display: inline-block;
@@ -600,17 +615,6 @@
 
 .flip span {
   display: block;
-}
-
-@keyframes fichaCaer {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
   </style>
