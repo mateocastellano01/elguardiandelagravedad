@@ -889,6 +889,8 @@
   const minutosSpan = document.getElementById("minutos");
   const segundosSpan = document.getElementById("segundos");
 
+  let prevDias, prevHoras, prevMinutos, prevSegundos;
+
   function animarFicha(span, valor) {
     span.textContent = valor;
     span.classList.remove("ficha");
@@ -918,15 +920,41 @@
     const segundos = Math.floor(
       (distancia % (1000 * 60)) / 1000
     );
-diasSpan.textContent = dias.toString().padStart(2, "0");
-horasSpan.textContent = horas.toString().padStart(2, "0");
-minutosSpan.textContent = minutos.toString().padStart(2, "0");
 
-animarFicha(
-  segundosSpan,
-  segundos.toString().padStart(2, "0")
-);
-    
+    const d = dias.toString().padStart(2, "0");
+    const h = horas.toString().padStart(2, "0");
+    const m = minutos.toString().padStart(2, "0");
+    const s = segundos.toString().padStart(2, "0");
+
+    // DÍAS
+    if (d !== prevDias) {
+      animarFicha(diasSpan, d);
+      prevDias = d;
+    } else {
+      diasSpan.textContent = d;
+    }
+
+    // HORAS
+    if (h !== prevHoras) {
+      animarFicha(horasSpan, h);
+      prevHoras = h;
+    } else {
+      horasSpan.textContent = h;
+    }
+
+    // MINUTOS
+    if (m !== prevMinutos) {
+      animarFicha(minutosSpan, m);
+      prevMinutos = m;
+    } else {
+      minutosSpan.textContent = m;
+    }
+
+    // SEGUNDOS
+    if (s !== prevSegundos) {
+      animarFicha(segundosSpan, s);
+      prevSegundos = s;
+    }
   }
 
   actualizarContador();
