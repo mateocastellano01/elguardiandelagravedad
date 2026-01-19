@@ -176,98 +176,135 @@
     text-align: center;
   }
 
-  /* ===================== DESCRIPCIÓN ===================== */
-  .descripcion {
-    max-width: 700px;
-    margin: auto;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: #cdd9d7;
-  }
+  <!-- =========================
+     DESCRIPCIÓN DEL PROYECTO
+========================= -->
+<section class="descripcion-proyecto">
+  <p class="descripcion">
+    <em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y
+    fantasía situada en una Argentina distópica. A través del viaje por un
+    mundo en conflicto —un país y su capital inundada y abandonada— la obra
+    reflexiona sobre el peso del pasado, la memoria y la resistencia emocional.
+  </p>
 
-  .acciones {
-    margin-top: 60px;
-  }
+  <div class="acciones">
+    <a href="#proyecto" class="btn">Ingresar al proyecto</a>
+    <a href="#bitacora" class="btn">Bitácora</a>
+  </div>
+</section>
 
-  .btn {
-    display: inline-block;
-    padding: 14px 34px;
-    margin: 10px;
-    border: 1px solid #6ea8a1;
-    color: #c7e6e2;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-  }
+  <!-- =========================
+     BITÁCORA / NOTICIAS
+========================= -->
+<section id="bitacora" class="seccion">
+  <h2>Bitácora / Noticias</h2>
 
-  /* ===================== BITÁCORA ===================== */
-  .bitacora {
-    max-width: 900px;
-    margin: auto;
-  }
+  <article class="entrada">
+    <h3>Avances del Capítulo 2</h3>
+    <p class="fecha">Febrero 2026</p>
+    <p>
+      Continúa el proceso de entintado del segundo capítulo de
+      <em>El Guardián de la Gravedad</em>. El clima de la ciudad inundada
+      empieza a tomar más protagonismo visual.
+    </p>
+  </article>
 
-  .bitacora-titulo {
-    font-size: 2rem;
-    letter-spacing: 3px;
-    margin-bottom: 100px;
-    color: #c7e6e2;
-  }
+  <article class="entrada">
+    <h3>Primeros bocetos del Capítulo 3</h3>
+    <p class="fecha">Enero 2026</p>
+    <p>
+      Exploraciones visuales y narrativas para el cierre del primer tomo.
+      La llegada a Capital Federal marca un quiebre en el viaje.
+    </p>
+  </article>
+</section>
 
-  .entrada {
-    max-width: 680px;
-    margin: 0 auto 100px;
-    border-left: 1px solid rgba(143,174,199,0.25);
-    padding-left: 30px;
-    text-align: left;
-  }
 
-  .fecha {
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    color: #8faec7;
-  }
+<!-- =========================
+     PROYECTO
+========================= -->
+<section id="proyecto" class="seccion fondo-oscuro">
+  <h2>El Proyecto</h2>
 
-  /* ===================== PROYECTO ===================== */
-  .proyecto-contenido {
-    max-width: 760px;
-    margin: auto;
-    text-align: left;
-  }
+  <p>
+    <strong>El Guardián de la Gravedad</strong> es una obra de ciencia ficción
+    y fantasía ambientada en una Argentina distópica. A través del viaje de
+    sus protagonistas, la historia aborda el peso de la responsabilidad,
+    el destino y la resistencia frente a un mundo colapsado.
+  </p>
 
-  /* ===================== COMISIONES ===================== */
-  .comisiones-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 60px;
-    max-width: 900px;
-    margin: auto;
-  }
+  <p>
+    El primer tomo culmina con la llegada a una Capital Federal
+    desolada y completamente inundada, donde la escala del conflicto
+    se vuelve inevitable.
+  </p>
+</section>
 
-  /* ===================== SOBRE MI ===================== */
-  .sobre-mi-contenido {
-    max-width: 720px;
-    margin: auto;
-    text-align: left;
-  }
 
-  /* ===================== FOOTER ===================== */
-  footer {
-    padding: 80px 20px 60px;
-    text-align: center;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    color: #8faec7;
-  }
+<!-- =========================
+     COMISIONES
+========================= -->
+<section id="comisiones" class="seccion">
+  <h2>Comisiones</h2>
 
-  /* ===================== RESPONSIVE ===================== */
-  @media (max-width: 768px) {
-    h1 { font-size: 2.3rem; }
-    .tagline { font-size: 1rem; }
-    .contador { font-size: 1.1rem; }
-    .guardian-img { width: 560px; opacity: 0.12; }
-    .top-nav ul { gap: 20px; }
-  }
+  <p>
+    Si te interesa encargar una ilustración, página de cómic o proyecto
+    personalizado, podés contactarme a través del siguiente formulario.
+  </p>
+
+  <form
+    action="https://formsubmit.co/mateocastellano01@gmail.com"
+    method="POST"
+    class="formulario"
+  >
+    <!-- Evita spam -->
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_subject" value="Nueva consulta desde la web">
+
+    <label>
+      Nombre y Apellido
+      <input type="text" name="nombre" required>
+    </label>
+
+    <label>
+      Email
+      <input type="email" name="email" required>
+    </label>
+
+    <label>
+      Descripción del pedido
+      <textarea name="mensaje" rows="5" required></textarea>
+    </label>
+
+    <button type="submit">Enviar consulta</button>
+  </form>
+</section>
+
+
+<!-- =========================
+     SOBRE MÍ
+========================= -->
+<section id="sobre-mi" class="seccion fondo-oscuro">
+  <h2>Sobre Mí</h2>
+
+  <p>
+    Mateo Castellano es Licenciado en Artes Visuales, orientado al cómic
+    y la narrativa gráfica. Su trabajo cruza ciencia ficción, fantasía
+    y elementos autobiográficos, explorando mundos colapsados como
+    metáfora de procesos personales y sociales.
+  </p>
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+<footer class="footer">
+  <p>
+    © 2026 — Mateo Castellano · Licenciatura en Artes Visuales
+  </p>
+</footer>
+
   </style>
 </head>
 
