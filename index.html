@@ -144,10 +144,11 @@
       color: #8fbfb7;
       letter-spacing: 1px;
       display: flex;
-      align-items: center; /* CLAVE */
+      align-items: center;
       justify-content: center;
       gap: 0.3em;
     }
+
     .separador {
       display: inline-flex;
       align-items: center;
@@ -601,20 +602,23 @@
 }
 
 .flip {
-  display: inline-block;
+  display: inline-flex;      
+  align-items: center;       
+  justify-content: center;
   overflow: hidden;
   height: 1.4em;
   width: 2ch;
-  position: relative;
 }
-
+ 
 .separador {
-  display: inline-block;
-  margin: 0 0.15em;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .flip span {
   display: block;
+  line-height: 1;
 }
 
 @keyframes fichaCaer {
