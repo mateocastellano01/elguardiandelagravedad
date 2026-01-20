@@ -1,394 +1,55 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="El Guardián de la Gravedad — historieta de ciencia ficción y fantasía. Proyecto y comisiones de Mateo Castellano.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Guardián de la Gravedad</title>
+    <style>
+        /* Updated Wind Animation */
+        @keyframes windAnimation {
+            0% { transform: translateY(0) skew(0deg); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-20px) skew(10deg); opacity: 1; }
+        }
 
-  <!-- FUENTE TEXTO GENERAL -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+        .header {
+            animation: windAnimation 900ms ease-in-out;
+        }
 
-  <title>El Guardián de la Gravedad</title>
+        .title,
+        .subtitle {
+            animation: letterReveal 900ms ease forwards;
+            display: inline-block;
+        }
 
-  <style>
-    /* ===================== RESET ===================== */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    html { scroll-behavior: smooth; }
+        @keyframes letterReveal {
+            from { width: 0; opacity: 0; }
+            to { width: 100%; opacity: 1; }
+        }
 
-    body {
-      font-family: 'Roboto Condensed', sans-serif;
-      color: #cfdde7;
-      background-color: #02060c;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
+        .top-nav a {
+            animation: windAnimation 900ms ease-in-out;
+            display: inline-block;
+        }
 
-    /* ===================== FONDO GLOBAL ===================== */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image: url("Ilustración El Guardian WEB.png");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 85vw auto;
-      opacity: 0.18;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    /* ===================== BARRA SUPERIOR ===================== */
-    .top-nav {
-      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
-      background: rgba(8, 18, 32, 0.65); backdrop-filter: blur(4px);
-      border-bottom: 1px solid rgba(110, 168, 161, 0.2);
-      transition: transform 0.25s ease-in-out;
-    }
-
-    .top-nav.hidden { transform: translateY(-100%); }
-
-    .top-nav ul { list-style: none; display: flex; justify-content: center; gap: 40px; padding: 18px 20px; }
-    .top-nav a { text-decoration: none; color: #b8d6e8; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s, opacity 0.3s; }
-    .top-nav a:hover, .top-nav a:focus { color: #e3f4ff; opacity: 0.95; }
-
-    /* ===================== HEADER ===================== */
-    header { min-height: 100vh; padding-top: 70px; display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at top, #0f1e2e, #06090f); position: relative; overflow: hidden; }
-
-    /* IMAGEN CENTRAL (decorativa) */
-    .guardian-img { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; max-width: 900px; height: auto; opacity: 0.18; z-index: 1; pointer-events: none; }
-
-    /* CONTENIDO HERO */
-    .hero { position: relative; z-index: 2; text-align: center; max-width: 900px; padding: 20px; }
-    h1 { font-size: 3.8rem; letter-spacing: 3px; margin-bottom: 20px; color: #c7e6e2; }
-    .tagline { font-size: 1.2rem; color: #9bc7c0; margin-bottom: 30px; letter-spacing: 1.2px; }
-
-    /* WIND (arrastre izquierda -> derecha) */
-    .wind { opacity: 0; transform: translateX(-36px) skewX(-4deg); will-change: transform, opacity; }
-    @keyframes windIn {
-      0% { opacity: 0; transform: translateX(-36px) skewX(-4deg); }
-      60% { opacity: 1; transform: translateX(8px) skewX(0deg); }
-      100% { opacity: 1; transform: translateX(0) skewX(0deg); }
-    }
-    .wind.animate { animation-name: windIn; animation-duration: 700ms; animation-fill-mode: forwards; animation-timing-function: cubic-bezier(.22,.9,.29,1); }
-
-    .delay-1 { animation-delay: 0s; }
-    .delay-2 { animation-delay: 180ms; }
-    .delay-3 { animation-delay: 360ms; }
-    .delay-4 { animation-delay: 560ms; }
-
-    /* CONTADOR (layout mejorada) */
-    .count-wrap { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
-    .count-label { font-size: 1.05rem; color:#8fbfb7; letter-spacing:1px; text-transform:uppercase; }
-
-    .time-group { display:flex; gap:12px; align-items:center; }
-    .time-unit { display:flex; flex-direction:column; align-items:center; min-width:56px; perspective:700px; }
-    .time-value {
-      display:flex; align-items:center; justify-content:center; background: rgba(8,18,32,0.55); border:1px solid rgba(143,174,199,0.18); padding:8px 10px; border-radius:6px; font-weight:700; color:#e6f6f5; font-variant-numeric:tabular-nums; width:3ch; text-align:center; line-height:1; will-change: transform, opacity; backface-visibility: hidden; transform-style: preserve-3d;
-    }
-    .time-label { font-size:0.7rem; color:#9fbfc6; margin-top:6px; letter-spacing:1px; }
-
-    /* Flip animation - smoother and subtler */
-    .time-value { transition: transform 520ms cubic-bezier(.25,.8,.25,1), opacity 380ms ease; }
-    .time-value.is-flipping { transform: rotateX(-20deg); opacity:0.85; }
-
-    /* Reveal utility */
-    .reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms ease, transform 600ms ease; }
-    .reveal.is-visible { opacity:1; transform: none; }
-
-    /* Panels for sections */
-    .panel { background: linear-gradient(180deg, rgba(6,10,14,0.48), rgba(6,10,14,0.40)); border: 1px solid rgba(110,168,161,0.08); padding: 28px; border-radius: 12px; backdrop-filter: blur(6px); }
-    .panel-inner { max-width: 1000px; margin: 0 auto; }
-
-    /* FORM — estilos mejorados */
-    .formulario-comisiones { max-width: 600px; margin: 32px auto 0; text-align: left; }
-    .campo { margin-bottom: 20px; }
-    .campo label { display:block; font-size:0.8rem; letter-spacing:1.5px; text-transform:uppercase; color:#9fbfc6; margin-bottom:8px; }
-    .campo input, .campo textarea {
-      width:100%; padding:12px 14px; background: rgba(8,18,32,0.5); border:1px solid rgba(143,174,199,0.16); color:#e6f6f5; font-size:1rem; border-radius:8px; outline:none; transition: box-shadow 180ms, border-color 180ms, transform 120ms;
-    }
-    .campo input::placeholder, .campo textarea::placeholder { color: rgba(231,245,246,0.35); }
-    .campo input:focus, .campo textarea:focus { border-color: rgba(110,168,161,0.9); box-shadow: 0 6px 20px rgba(32,120,110,0.08); transform: translateY(-1px); }
-
-    .formulario-comisiones .btn { display:block; margin:18px 0 0; padding:12px 18px; width:100%; background: linear-gradient(90deg,#6ea8a1 0%, #2e8e84 100%); color:#f3fffd; border:none; border-radius:10px; font-weight:700; letter-spacing:1px; box-shadow: 0 8px 24px rgba(45,110,103,0.12); transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease; }
-    .formulario-comisiones .btn:hover, .formulario-comisiones .btn:focus { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(36,100,92,0.16); filter:brightness(1.03); }
-
-    /* Small helpers */
-    .visually-hidden { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
-
-    /* Sections and content styling (kept concise) */
-    section.lead { padding: 120px 20px; text-align: center; }
-    .descripcion { max-width: 700px; margin:auto; font-size:1.05rem; line-height:1.7; color:#cdd9d7; }
-    .acciones { margin-top: 24px; display:flex; gap:12px; justify-content:center; }
-    .btn { display:inline-block; padding:12px 28px; margin:8px; border:1px solid rgba(110,168,161,0.14); color:#c7e6e2; text-decoration:none; text-transform:uppercase; font-size:0.85rem; letter-spacing:2px; background:transparent; border-radius:8px; transition: transform 160ms, background 200ms; }
-    .btn:hover, .btn:focus { transform: translateY(-3px); background: rgba(110,168,161,0.08); }
-
-    .bitacora{ padding:80px 20px; max-width:1000px; margin:0 auto; }
-    .bitacora-titulo{ text-align:center; font-size:2rem; color:#c7e6e2; margin-bottom:20px; }
-    .entrada{ max-width:680px; margin:0 auto 30px; border-left:1px solid rgba(143,174,199,0.14); padding-left:20px; }
-    .fecha{ display:block; font-size:0.75rem; color:#8faec7; margin-bottom:10px; }
-
-    /* responsive */
-    @media (max-width:768px){ h1{ font-size:2.3rem; } .guardian-img{ width:560px; } .count-wrap{ gap:12px; } .time-unit{ min-width:48px;} .time-value{ padding:6px 8px; } .top-nav ul{ gap:16px; padding:12px 8px; } .panel{ padding:18px; } .actions{flex-direction:column;} }
-  </style>
+        .send-button {
+            background-color: #333; /* Darker tone */
+            color: #fff;
+        }
+    </style>
 </head>
-
 <body>
-  <a class="visually-hidden" href="#main-content">Saltar al contenido</a>
-
-  <nav class="top-nav" role="navigation" aria-label="Navegación principal">
-    <ul>
-      <li><a href="#bitacora">Bitácora / Noticias</a></li>
-      <li><a href="#proyecto">Proyecto</a></li>
-      <li><a href="#comisiones">Comisiones</a></li>
-      <li><a href="#sobre-mi">Sobre mí</a></li>
-    </ul>
-  </nav>
-
-  <header>
-    <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true">
-
-    <div class="hero" role="banner">
-      <h1 class="wind delay-1">EL GUARDIÁN DE LA GRAVEDAD</h1>
-
-      <p class="tagline wind delay-2">El peso de una RESPONSABILIDAD, frente a los ojos de un DESTINO.</p>
-
-      <div class="count-wrap wind delay-4" style="margin-top:18px;">
-        <div class="count-label">Lanzamiento en:</div>
-
-        <div class="time-group" aria-hidden="false" role="timer" aria-live="polite">
-          <div class="time-unit">
-            <div class="time-value" id="dias">00</div>
-            <div class="time-label">Días</div>
-          </div>
-
-          <div class="time-unit">
-            <div class="time-value" id="horas">00</div>
-            <div class="time-label">Horas</div>
-          </div>
-
-          <div class="time-unit">
-            <div class="time-value" id="minutos">00</div>
-            <div class="time-label">Minutos</div>
-          </div>
-
-          <div class="time-unit">
-            <div class="time-value" id="segundos">00</div>
-            <div class="time-label">Segundos</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="acciones" style="margin-top:18px;">
-        <a href="#proyecto" class="btn wind delay-3">Ingresar al proyecto</a>
-        <a href="#bitacora" class="btn wind delay-3">Bitácora</a>
-      </div>
-
+    <div class="header">
+        <h1 class="title">El Guardián de la Gravedad</h1>
+        <h2 class="subtitle">No dejes que la gravedad te detenga</h2>
     </div>
-  </header>
-
-  <main id="main-content" role="main">
-    <section class="lead reveal">
-      <div class="panel">
-        <div class="panel-inner">
-          <p class="descripcion"> <em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. A través del viaje en un mundo en conflicto, un país y su capital inundada y abandonada, la obra reflexiona sobre el peso del pasado, la memoria y la resistencia emocional.</p>
-
-          <div class="acciones">
-            <a href="#proyecto" class="btn">Ingresar al proyecto</a>
-            <a href="#bitacora" class="btn">Bitácora</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="bitacora" class="bitacora reveal" aria-labelledby="bitacora-title">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 id="bitacora-title" class="bitacora-titulo">Bitácora / Noticias</h2>
-
-          <article class="entrada">
-            <span class="fecha">12 · Marzo · 2025</span>
-            <h3>La ciudad sumergida</h3>
-            <p>Avances sobre el final del Tomo I. La llegada a una Capital Federal inundada implicó repensar el color, el silencio y el peso del paisaje como parte activa del relato.</p>
-          </article>
-
-          <article class="entrada">
-            <span class="fecha">28 · Febrero · 2025</span>
-            <h3>Decisiones de atmósfera y color</h3>
-            <p>La paleta fría y desaturada aparece como una forma de narrar el agotamiento, pero también la persistencia. El espacio y el agua comienzan a dialogar visualmente.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="proyecto" class="reveal" style="padding:40px 20px 80px;">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 class="proyecto-titulo">El Proyecto</h2>
-          <div style="max-width:760px;margin:0 auto;color:#d7e4e2;line-height:1.8;"> 
-            <p><em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. La obra se construye como un viaje físico y emocional a través de territorios colapsados, donde el paisaje, la memoria y el cuerpo se vuelven inseparables.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="comisiones" class="reveal" style="padding:40px 20px 80px;">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 class="comisiones-titulo">Comisiones</h2>
-          <p class="comisiones-intro">Realizo trabajos por encargo vinculados a la ilustración, el dibujo narrativo y el diseño de personajes. Cada pedido se trabaja de manera personalizada, respetando tiempos, procesos y acuerdos previos.</p>
-
-          <div class="comisiones-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;max-width:900px;margin:24px auto;">
-            <div class="comision"><h3>Ilustración</h3><p>Ilustraciones originales en técnica digital o tradicional.</p></div>
-            <div class="comision"><h3>Dibujo narrativo</h3><p>Viñetas, páginas o escenas con enfoque secuencial.</p></div>
-            <div class="comision"><h3>Personajes</h3><p>Diseño y desarrollo de personajes.</p></div>
-          </div>
-
-          <form class="formulario-comisiones" action="https://formspree.io/f/maqwlbqw" method="POST" aria-label="Formulario de comisiones">
-            <div class="campo"><label for="nombre">Nombre y apellido</label><input type="text" id="nombre" name="nombre" required></div>
-            <div class="campo"><label for="email">E-mail</label><input type="email" id="email" name="email" required></div>
-            <div class="campo"><label for="mensaje">Descripción del pedido</label><textarea id="mensaje" name="mensaje" rows="5" required></textarea></div>
-            <input type="hidden" name="_subject" value="Nueva consulta de comisión">
-            <button type="submit" class="btn">Enviar consulta</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section id="sobre-mi" class="reveal" style="padding:40px 20px 80px;">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 class="sobre-mi-titulo">Sobre mí</h2>
-          <div style="max-width:720px;margin:0 auto;color:#d7e4e2;line-height:1.8;">
-            <p>Soy Mateo Castellano, artista visual y estudiante de la Licenciatura en Artes Visuales. Mi trabajo se centra en la historieta, el dibujo narrativo y la construcción de mundos como forma de reflexión sobre la memoria, el territorio y la responsabilidad individual.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer style="padding:60px 20px;text-align:center;color:#8faec7;">Mateo Castellano — Licenciatura en Artes Visuales<br>Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a></footer>
-
-  <script>
-    (function(){
-      // Smooth-scroll offset handling for fixed header
-      const nav = document.querySelector('.top-nav');
-      const navHeight = () => nav ? nav.getBoundingClientRect().height : 0;
-
-      document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', function(e){
-          const href = this.getAttribute('href');
-          if(!href || href === '#') return;
-          if(href.startsWith('#')){
-            const target = document.querySelector(href);
-            if(target){
-              e.preventDefault();
-              const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight() - 12;
-              window.scrollTo({ top, behavior: 'smooth' });
-            }
-          }
-        });
-      });
-
-      // Reveal on scroll
-      const reveals = document.querySelectorAll('.reveal');
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if(entry.isIntersecting){
-            entry.target.classList.add('is-visible');
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12 });
-
-      reveals.forEach(r => io.observe(r));
-
-      // Wind animations for header elements (sequence)
-      function runWindSequence(){
-        const seq = document.querySelectorAll('.wind');
-        seq.forEach(el => {
-          // ensure we add animate class but respect existing delay via CSS
-          // force reflow to ensure animations run reliably
-          void el.offsetWidth;
-          el.classList.add('animate');
-        });
-      }
-
-      // Run on load and when hero is in viewport
-      if(document.readyState === 'complete' || document.readyState === 'interactive'){
-        runWindSequence();
-      } else {
-        window.addEventListener('DOMContentLoaded', runWindSequence);
-      }
-
-      // Header hide on scroll down, show on up
-      let lastScroll = window.pageYOffset;
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if(!ticking){
-          window.requestAnimationFrame(() => {
-            const current = window.pageYOffset;
-            if(current > lastScroll && current > 80){ nav.classList.add('hidden'); }
-            else { nav.classList.remove('hidden'); }
-            lastScroll = current;
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }, { passive: true });
-
-      // Countdown logic with smoother flip animation
-      const lanzamiento = new Date('March 20, 2026 00:00:00').getTime();
-      const diasEl = document.getElementById('dias');
-      const horasEl = document.getElementById('horas');
-      const minutosEl = document.getElementById('minutos');
-      const segundosEl = document.getElementById('segundos');
-
-      function setAndFlip(el, value){
-        if(!el) return;
-        if(el.textContent !== value){
-          el.classList.add('is-flipping');
-          setTimeout(() => {
-            el.textContent = value;
-            el.classList.remove('is-flipping');
-          }, 140);
-        } else {
-          el.textContent = value;
-        }
-      }
-
-      function updateCounter(){
-        const now = Date.now();
-        let diff = lanzamiento - now;
-        if(diff <= 0){ setAndFlip(diasEl, '00'); setAndFlip(horasEl, '00'); setAndFlip(minutosEl, '00'); setAndFlip(segundosEl, '00'); clearInterval(interval); return; }
-
-        const dias = Math.floor(diff / (1000*60*60*24));
-        diff -= dias * (1000*60*60*24);
-        const horas = Math.floor(diff / (1000*60*60));
-        diff -= horas * (1000*60*60);
-        const minutos = Math.floor(diff / (1000*60));
-        diff -= minutos * (1000*60);
-        const segundos = Math.floor(diff / 1000);
-
-        const d = String(dias).padStart(2,'0');
-        const h = String(horas).padStart(2,'0');
-        const m = String(minutos).padStart(2,'0');
-        const s = String(segundos).padStart(2,'0');
-
-        setAndFlip(diasEl, d);
-        setAndFlip(horasEl, h);
-        setAndFlip(minutosEl, m);
-        setAndFlip(segundosEl, s);
-      }
-
-      updateCounter();
-      const interval = setInterval(updateCounter, 1000);
-
-    })();
-  </script>
+    <nav class="top-nav">
+        <a href="#">Link 1</a>
+        <a href="#">Link 2</a>
+        <a href="#">Link 3</a>
+    </nav>
+    <div class="bottom-buttons">
+        <button class="send-button">Send</button>
+    </div>
 </body>
 </html>
