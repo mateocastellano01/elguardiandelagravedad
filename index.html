@@ -66,28 +66,55 @@
     h1 { font-size: 3.8rem; letter-spacing: 3px; margin-bottom: 20px; color: #c7e6e2; }
     .tagline { font-size: 1.2rem; color: #9bc7c0; margin-bottom: 30px; letter-spacing: 1.2px; }
 
+    /* WIND (arrastre izquierda -> derecha) */
+    .wind { opacity: 0; transform: translateX(-36px) skewX(-4deg); will-change: transform, opacity; }
+    @keyframes windIn {
+      0% { opacity: 0; transform: translateX(-36px) skewX(-4deg); }
+      60% { opacity: 1; transform: translateX(8px) skewX(0deg); }
+      100% { opacity: 1; transform: translateX(0) skewX(0deg); }
+    }
+    .wind.animate { animation-name: windIn; animation-duration: 700ms; animation-fill-mode: forwards; animation-timing-function: cubic-bezier(.22,.9,.29,1); }
+
+    .delay-1 { animation-delay: 0s; }
+    .delay-2 { animation-delay: 180ms; }
+    .delay-3 { animation-delay: 360ms; }
+    .delay-4 { animation-delay: 560ms; }
+
     /* CONTADOR (layout mejorada) */
     .count-wrap { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
     .count-label { font-size: 1.05rem; color:#8fbfb7; letter-spacing:1px; text-transform:uppercase; }
 
     .time-group { display:flex; gap:12px; align-items:center; }
-    .time-unit { display:flex; flex-direction:column; align-items:center; min-width:56px; }
+    .time-unit { display:flex; flex-direction:column; align-items:center; min-width:56px; perspective:700px; }
     .time-value {
-      display:flex; align-items:center; justify-content:center; background: rgba(8,18,32,0.5); border:1px solid rgba(143,174,199,0.18); padding:8px 10px; border-radius:6px; font-weight:700; color:#e6f6f5; font-variant-numeric:tabular-nums; width:3ch; text-align:center; line-height:1; will-change: transform, opacity; backface-visibility: hidden; transform-style: preserve-3d;
+      display:flex; align-items:center; justify-content:center; background: rgba(8,18,32,0.55); border:1px solid rgba(143,174,199,0.18); padding:8px 10px; border-radius:6px; font-weight:700; color:#e6f6f5; font-variant-numeric:tabular-nums; width:3ch; text-align:center; line-height:1; will-change: transform, opacity; backface-visibility: hidden; transform-style: preserve-3d;
     }
     .time-label { font-size:0.7rem; color:#9fbfc6; margin-top:6px; letter-spacing:1px; }
 
-    /* Flip animation - smoother */
-    .time-value { transition: transform 500ms cubic-bezier(.25,.8,.25,1), opacity 400ms ease; }
-    .time-value.is-flipping { transform: rotateX(-28deg); opacity:0.7; }
+    /* Flip animation - smoother and subtler */
+    .time-value { transition: transform 520ms cubic-bezier(.25,.8,.25,1), opacity 380ms ease; }
+    .time-value.is-flipping { transform: rotateX(-20deg); opacity:0.85; }
 
     /* Reveal utility */
     .reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms ease, transform 600ms ease; }
     .reveal.is-visible { opacity:1; transform: none; }
 
     /* Panels for sections */
-    .panel { background: rgba(6, 10, 14, 0.5); border: 1px solid rgba(110,168,161,0.08); padding: 28px; border-radius: 10px; backdrop-filter: blur(4px); }
-    .panel-inner { max-width: 900px; margin: 0 auto; }
+    .panel { background: linear-gradient(180deg, rgba(6,10,14,0.48), rgba(6,10,14,0.40)); border: 1px solid rgba(110,168,161,0.08); padding: 28px; border-radius: 12px; backdrop-filter: blur(6px); }
+    .panel-inner { max-width: 1000px; margin: 0 auto; }
+
+    /* FORM — estilos mejorados */
+    .formulario-comisiones { max-width: 600px; margin: 32px auto 0; text-align: left; }
+    .campo { margin-bottom: 20px; }
+    .campo label { display:block; font-size:0.8rem; letter-spacing:1.5px; text-transform:uppercase; color:#9fbfc6; margin-bottom:8px; }
+    .campo input, .campo textarea {
+      width:100%; padding:12px 14px; background: rgba(8,18,32,0.5); border:1px solid rgba(143,174,199,0.16); color:#e6f6f5; font-size:1rem; border-radius:8px; outline:none; transition: box-shadow 180ms, border-color 180ms, transform 120ms;
+    }
+    .campo input::placeholder, .campo textarea::placeholder { color: rgba(231,245,246,0.35); }
+    .campo input:focus, .campo textarea:focus { border-color: rgba(110,168,161,0.9); box-shadow: 0 6px 20px rgba(32,120,110,0.08); transform: translateY(-1px); }
+
+    .formulario-comisiones .btn { display:block; margin:18px 0 0; padding:12px 18px; width:100%; background: linear-gradient(90deg,#6ea8a1 0%, #2e8e84 100%); color:#f3fffd; border:none; border-radius:10px; font-weight:700; letter-spacing:1px; box-shadow: 0 8px 24px rgba(45,110,103,0.12); transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease; }
+    .formulario-comisiones .btn:hover, .formulario-comisiones .btn:focus { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(36,100,92,0.16); filter:brightness(1.03); }
 
     /* Small helpers */
     .visually-hidden { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
@@ -95,9 +122,9 @@
     /* Sections and content styling (kept concise) */
     section.lead { padding: 120px 20px; text-align: center; }
     .descripcion { max-width: 700px; margin:auto; font-size:1.05rem; line-height:1.7; color:#cdd9d7; }
-    .acciones { margin-top: 40px; }
-    .btn { display:inline-block; padding:12px 28px; margin:8px; border:1px solid #6ea8a1; color:#c7e6e2; text-decoration:none; text-transform:uppercase; font-size:0.85rem; letter-spacing:2px; transition: transform 160ms, background 200ms; }
-    .btn:hover, .btn:focus { transform: translateY(-3px); background: rgba(110,168,161,0.12); }
+    .acciones { margin-top: 24px; display:flex; gap:12px; justify-content:center; }
+    .btn { display:inline-block; padding:12px 28px; margin:8px; border:1px solid rgba(110,168,161,0.14); color:#c7e6e2; text-decoration:none; text-transform:uppercase; font-size:0.85rem; letter-spacing:2px; background:transparent; border-radius:8px; transition: transform 160ms, background 200ms; }
+    .btn:hover, .btn:focus { transform: translateY(-3px); background: rgba(110,168,161,0.08); }
 
     .bitacora{ padding:80px 20px; max-width:1000px; margin:0 auto; }
     .bitacora-titulo{ text-align:center; font-size:2rem; color:#c7e6e2; margin-bottom:20px; }
@@ -105,7 +132,7 @@
     .fecha{ display:block; font-size:0.75rem; color:#8faec7; margin-bottom:10px; }
 
     /* responsive */
-    @media (max-width:768px){ h1{ font-size:2.3rem; } .guardian-img{ width:560px; } .count-wrap{ gap:12px; } .time-unit{ min-width:48px;} .time-value{ padding:6px 8px; } .top-nav ul{ gap:16px; padding:12px 8px; } .panel{ padding:18px; } }
+    @media (max-width:768px){ h1{ font-size:2.3rem; } .guardian-img{ width:560px; } .count-wrap{ gap:12px; } .time-unit{ min-width:48px;} .time-value{ padding:6px 8px; } .top-nav ul{ gap:16px; padding:12px 8px; } .panel{ padding:18px; } .actions{flex-direction:column;} }
   </style>
 </head>
 
@@ -125,11 +152,11 @@
     <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true">
 
     <div class="hero" role="banner">
-      <h1 class="reveal">EL GUARDIÁN DE LA GRAVEDAD</h1>
+      <h1 class="wind delay-1">EL GUARDIÁN DE LA GRAVEDAD</h1>
 
-      <p class="tagline reveal">El peso de una RESPONSABILIDAD, frente a los ojos de un DESTINO.</p>
+      <p class="tagline wind delay-2">El peso de una RESPONSABILIDAD, frente a los ojos de un DESTINO.</p>
 
-      <div class="count-wrap reveal" style="margin-top:18px;">
+      <div class="count-wrap wind delay-4" style="margin-top:18px;">
         <div class="count-label">Lanzamiento en:</div>
 
         <div class="time-group" aria-hidden="false" role="timer" aria-live="polite">
@@ -153,6 +180,11 @@
             <div class="time-label">Segundos</div>
           </div>
         </div>
+      </div>
+
+      <div class="acciones" style="margin-top:18px;">
+        <a href="#proyecto" class="btn wind delay-3">Ingresar al proyecto</a>
+        <a href="#bitacora" class="btn wind delay-3">Bitácora</a>
       </div>
 
     </div>
@@ -215,7 +247,7 @@
             <div class="comision"><h3>Personajes</h3><p>Diseño y desarrollo de personajes.</p></div>
           </div>
 
-          <form class="formulario-comisiones" action="https://formspree.io/f/maqwlbqw" method="POST" style="max-width:600px;margin:32px auto 0;text-align:left;" aria-label="Formulario de comisiones">
+          <form class="formulario-comisiones" action="https://formspree.io/f/maqwlbqw" method="POST" aria-label="Formulario de comisiones">
             <div class="campo"><label for="nombre">Nombre y apellido</label><input type="text" id="nombre" name="nombre" required></div>
             <div class="campo"><label for="email">E-mail</label><input type="email" id="email" name="email" required></div>
             <div class="campo"><label for="mensaje">Descripción del pedido</label><textarea id="mensaje" name="mensaje" rows="5" required></textarea></div>
@@ -275,6 +307,24 @@
 
       reveals.forEach(r => io.observe(r));
 
+      // Wind animations for header elements (sequence)
+      function runWindSequence(){
+        const seq = document.querySelectorAll('.wind');
+        seq.forEach(el => {
+          // ensure we add animate class but respect existing delay via CSS
+          // force reflow to ensure animations run reliably
+          void el.offsetWidth;
+          el.classList.add('animate');
+        });
+      }
+
+      // Run on load and when hero is in viewport
+      if(document.readyState === 'complete' || document.readyState === 'interactive'){
+        runWindSequence();
+      } else {
+        window.addEventListener('DOMContentLoaded', runWindSequence);
+      }
+
       // Header hide on scroll down, show on up
       let lastScroll = window.pageYOffset;
       let ticking = false;
@@ -302,11 +352,10 @@
         if(!el) return;
         if(el.textContent !== value){
           el.classList.add('is-flipping');
-          // after a short delay, swap value and let CSS animate back
           setTimeout(() => {
             el.textContent = value;
             el.classList.remove('is-flipping');
-          }, 110);
+          }, 140);
         } else {
           el.textContent = value;
         }
