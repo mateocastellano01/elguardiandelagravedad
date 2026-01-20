@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="Ilustración El Guardian WEB.png">
 
   <style>
     /* RESET */
@@ -31,9 +32,29 @@
       background-repeat:no-repeat;
       background-position:center;
       background-size:85vw auto;
-      opacity:0.18;
+      opacity:0;
+      filter:blur(12px);
+      transform:scale(1.08) rotate(2deg);
       z-index:-1;
       pointer-events:none;
+    }
+
+    /* Animación épica de revelación del fondo */
+    @keyframes epicAppear {
+      0% {
+        opacity:0;
+        filter:blur(12px);
+        transform:scale(1.08) rotate(2deg);
+      }
+      100% {
+        opacity:0.18;
+        filter:blur(0px);
+        transform:scale(1) rotate(0deg);
+      }
+    }
+
+    body.bg-loaded::before{
+      animation:epicAppear 1400ms cubic-bezier(0.22,0.9,0.29,1) forwards;
     }
 
     /* TOP NAV */
@@ -148,6 +169,36 @@
     .entrada{max-width:680px;margin:0 auto 30px;border-left:1px solid rgba(143,174,199,0.14);padding-left:20px}
     .fecha{display:block;font-size:.75rem;color:#8faec7;margin-bottom:10px}
 
+    /* BOTÓN VOLVER ARRIBA */
+    .back-to-top{
+      position:fixed;bottom:28px;right:28px;
+      width:52px;height:52px;
+      background:linear-gradient(135deg,#0f3f3b 0%,#0b2a28 100%);
+      border:1px solid rgba(110,168,161,0.3);
+      border-radius:50%;
+      color:#eaf7f4;
+      font-size:1.5rem;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;
+      opacity:0;
+      transform:translateY(20px) scale(0.8);
+      transition:opacity 320ms ease,transform 320ms cubic-bezier(0.22,0.9,0.29,1),box-shadow 200ms ease;
+      box-shadow:0 8px 24px rgba(8,36,34,0.3);
+      z-index:1000;
+      pointer-events:none;
+    }
+    .back-to-top.visible{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      pointer-events:auto;
+    }
+    .back-to-top:hover,.back-to-top:focus{
+      transform:translateY(-4px) scale(1.05);
+      box-shadow:0 12px 32px rgba(8,36,34,0.4);
+      background:linear-gradient(135deg,#11504a 0%,#0d302f 100%);
+    }
+    .back-to-top:focus{outline:2px solid rgba(110,168,161,0.6);outline-offset:3px}
+
     @media (max-width:768px){
       h1{font-size:2.3rem}
       .guardian-img{width:560px}
@@ -172,7 +223,7 @@
   </nav>
 
   <header>
-    <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true">
+    <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true" loading="lazy">
 
     <div class="hero" role="banner">
       <h1 id="main-title">EL GUARDIÁN DE LA GRAVEDAD</h1>
@@ -287,8 +338,50 @@
     Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a>
   </footer>
 
+  <button id="backToTop" class="back-to-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
   <script>
     (function(){
+      // Precargar imagen de fondo con fallback timeout
+      let bgLoaded = false;
+      let windSequenceRan = false;
+
+      function triggerBgAnimation(){
+        if(!bgLoaded){
+          bgLoaded = true;
+          document.body.classList.add('bg-loaded');
+        }
+      }
+
+      // Cargar imagen de fondo
+      const bgImage = new Image();
+      bgImage.onload = function(){
+        triggerBgAnimation();
+        // Ejecutar secuencia wind con pequeño delay después de que cargue el fondo
+        if(!windSequenceRan){
+          setTimeout(runWindSequence, 200);
+          windSequenceRan = true;
+        }
+      };
+      bgImage.onerror = function(){
+        // Si falla la carga, igual mostrar el fondo
+        triggerBgAnimation();
+        if(!windSequenceRan){
+          setTimeout(runWindSequence, 200);
+          windSequenceRan = true;
+        }
+      };
+      bgImage.src = "Ilustración El Guardian WEB.png";
+
+      // Fallback timeout: si la imagen no carga en 1.2s, activar de todos modos
+      setTimeout(function(){
+        triggerBgAnimation();
+        if(!windSequenceRan){
+          runWindSequence();
+          windSequenceRan = true;
+        }
+      }, 1200);
+
       // Smooth scroll with header offset
       const nav = document.querySelector('.top-nav');
       const navHeight = () => nav ? nav.getBoundingClientRect().height : 0;
@@ -352,8 +445,21 @@
         document.querySelectorAll('.letter').forEach(span => span.setAttribute('data-animate','true'));
       }
 
-      if(document.readyState === 'complete' || document.readyState === 'interactive') runWindSequence();
-      else window.addEventListener('DOMContentLoaded', runWindSequence);
+      // Si el documento ya está cargado cuando se ejecuta el script, ejecutar runWindSequence via DOMContentLoaded
+      if(document.readyState === 'complete' || document.readyState === 'interactive'){
+        // Solo ejecutar si la imagen ya está cargada (bgLoaded) y windSequence no se ha ejecutado
+        if(bgLoaded && !windSequenceRan){
+          runWindSequence();
+          windSequenceRan = true;
+        }
+      } else {
+        window.addEventListener('DOMContentLoaded', function(){
+          if(bgLoaded && !windSequenceRan){
+            runWindSequence();
+            windSequenceRan = true;
+          }
+        });
+      }
 
       // header show/hide on scroll
       let lastScroll = window.pageYOffset, ticking=false;
@@ -394,6 +500,42 @@
       }
       updateCounter();
       const interval = setInterval(updateCounter,1000);
+
+      // Botón Volver arriba
+      const backToTop = document.getElementById('backToTop');
+      if(backToTop){
+        // Mostrar/ocultar botón según scroll
+        window.addEventListener('scroll', () => {
+          if(window.pageYOffset > 360){
+            backToTop.classList.add('visible');
+          } else {
+            backToTop.classList.remove('visible');
+          }
+        }, {passive:true});
+
+        // Click para scroll arriba
+        backToTop.addEventListener('click', function(){
+          window.scrollTo({top:0, behavior:'smooth'});
+          // Mover foco a main-content después de scroll
+          setTimeout(function(){
+            const mainContent = document.getElementById('main-content');
+            if(mainContent){
+              mainContent.setAttribute('tabindex','-1');
+              mainContent.focus();
+              // Remover tabindex después de foco para no afectar navegación
+              setTimeout(function(){ mainContent.removeAttribute('tabindex'); }, 100);
+            }
+          }, 600);
+        });
+
+        // Soporte de teclado (Enter/Space)
+        backToTop.addEventListener('keydown', function(e){
+          if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            backToTop.click();
+          }
+        });
+      }
 
     })();
   </script>
