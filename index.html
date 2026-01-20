@@ -223,7 +223,7 @@
   </nav>
 
   <header>
-    <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true" loading="lazy">
+    <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true" loading="eager">
 
     <div class="hero" role="banner">
       <h1 id="main-title">EL GUARDIÁN DE LA GRAVEDAD</h1>
@@ -353,33 +353,31 @@
         }
       }
 
+      function maybeRunWindSequence(){
+        if(!windSequenceRan){
+          runWindSequence();
+          windSequenceRan = true;
+        }
+      }
+
       // Cargar imagen de fondo
       const bgImage = new Image();
       bgImage.onload = function(){
         triggerBgAnimation();
         // Ejecutar secuencia wind con pequeño delay después de que cargue el fondo
-        if(!windSequenceRan){
-          setTimeout(runWindSequence, 200);
-          windSequenceRan = true;
-        }
+        setTimeout(maybeRunWindSequence, 200);
       };
       bgImage.onerror = function(){
         // Si falla la carga, igual mostrar el fondo
         triggerBgAnimation();
-        if(!windSequenceRan){
-          setTimeout(runWindSequence, 200);
-          windSequenceRan = true;
-        }
+        setTimeout(maybeRunWindSequence, 200);
       };
       bgImage.src = "Ilustración El Guardian WEB.png";
 
       // Fallback timeout: si la imagen no carga en 1.2s, activar de todos modos
       setTimeout(function(){
         triggerBgAnimation();
-        if(!windSequenceRan){
-          runWindSequence();
-          windSequenceRan = true;
-        }
+        maybeRunWindSequence();
       }, 1200);
 
       // Smooth scroll with header offset
@@ -443,22 +441,6 @@
 
         // trigger letter animations by setting data-animate true (letters already have per-letter animationDelay inline)
         document.querySelectorAll('.letter').forEach(span => span.setAttribute('data-animate','true'));
-      }
-
-      // Si el documento ya está cargado cuando se ejecuta el script, ejecutar runWindSequence via DOMContentLoaded
-      if(document.readyState === 'complete' || document.readyState === 'interactive'){
-        // Solo ejecutar si la imagen ya está cargada (bgLoaded) y windSequence no se ha ejecutado
-        if(bgLoaded && !windSequenceRan){
-          runWindSequence();
-          windSequenceRan = true;
-        }
-      } else {
-        window.addEventListener('DOMContentLoaded', function(){
-          if(bgLoaded && !windSequenceRan){
-            runWindSequence();
-            windSequenceRan = true;
-          }
-        });
       }
 
       // header show/hide on scroll
