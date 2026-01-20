@@ -72,35 +72,40 @@
 
     .time-group { display:flex; gap:12px; align-items:center; }
     .time-unit { display:flex; flex-direction:column; align-items:center; min-width:56px; }
-    .time-value { display:inline-block; background: rgba(8,18,32,0.5); border:1px solid rgba(143,174,199,0.18); padding:8px 10px; border-radius:6px; font-weight:700; color:#e6f6f5; font-variant-numeric:tabular-nums; width:3ch; text-align:center; }
+    .time-value {
+      display:flex; align-items:center; justify-content:center; background: rgba(8,18,32,0.5); border:1px solid rgba(143,174,199,0.18); padding:8px 10px; border-radius:6px; font-weight:700; color:#e6f6f5; font-variant-numeric:tabular-nums; width:3ch; text-align:center; line-height:1; will-change: transform, opacity; backface-visibility: hidden; transform-style: preserve-3d;
+    }
     .time-label { font-size:0.7rem; color:#9fbfc6; margin-top:6px; letter-spacing:1px; }
 
-    /* Flip animation */
-    .time-value { transform-origin: 50% 50% 0; transition: transform 0.45s cubic-bezier(.22,.61,.36,1), opacity 0.45s; }
-    .flip-anim { transform: rotateX(-90deg); opacity: 0; }
+    /* Flip animation - smoother */
+    .time-value { transition: transform 500ms cubic-bezier(.25,.8,.25,1), opacity 400ms ease; }
+    .time-value.is-flipping { transform: rotateX(-28deg); opacity:0.7; }
 
     /* Reveal utility */
     .reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms ease, transform 600ms ease; }
     .reveal.is-visible { opacity:1; transform: none; }
 
+    /* Panels for sections */
+    .panel { background: rgba(6, 10, 14, 0.5); border: 1px solid rgba(110,168,161,0.08); padding: 28px; border-radius: 10px; backdrop-filter: blur(4px); }
+    .panel-inner { max-width: 900px; margin: 0 auto; }
+
     /* Small helpers */
     .visually-hidden { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 
     /* Sections and content styling (kept concise) */
-    section.lead { padding: 120px 20px; text-align: center; background: linear-gradient(to bottom, rgba(8, 18, 32, 0.65), rgba(4, 10, 18, 0.85)); }
+    section.lead { padding: 120px 20px; text-align: center; }
     .descripcion { max-width: 700px; margin:auto; font-size:1.05rem; line-height:1.7; color:#cdd9d7; }
     .acciones { margin-top: 40px; }
     .btn { display:inline-block; padding:12px 28px; margin:8px; border:1px solid #6ea8a1; color:#c7e6e2; text-decoration:none; text-transform:uppercase; font-size:0.85rem; letter-spacing:2px; transition: transform 160ms, background 200ms; }
     .btn:hover, .btn:focus { transform: translateY(-3px); background: rgba(110,168,161,0.12); }
 
-    /* reusar estilos existentes para otras secciones (abrev.) */
-    .bitacora{ padding:120px 20px; max-width:900px; margin:auto; }
-    .bitacora-titulo{ text-align:center; font-size:2rem; color:#c7e6e2; margin-bottom:60px; }
-    .entrada{ max-width:680px; margin:0 auto 60px; border-left:1px solid rgba(143,174,199,0.25); padding-left:30px; }
+    .bitacora{ padding:80px 20px; max-width:1000px; margin:0 auto; }
+    .bitacora-titulo{ text-align:center; font-size:2rem; color:#c7e6e2; margin-bottom:20px; }
+    .entrada{ max-width:680px; margin:0 auto 30px; border-left:1px solid rgba(143,174,199,0.14); padding-left:20px; }
     .fecha{ display:block; font-size:0.75rem; color:#8faec7; margin-bottom:10px; }
 
     /* responsive */
-    @media (max-width:768px){ h1{ font-size:2.3rem; } .guardian-img{ width:560px; } .count-wrap{ gap:12px; } .time-unit{ min-width:48px;} .time-value{ padding:6px 8px; } .top-nav ul{ gap:16px; padding:12px 8px; } }
+    @media (max-width:768px){ h1{ font-size:2.3rem; } .guardian-img{ width:560px; } .count-wrap{ gap:12px; } .time-unit{ min-width:48px;} .time-value{ padding:6px 8px; } .top-nav ul{ gap:16px; padding:12px 8px; } .panel{ padding:18px; } }
   </style>
 </head>
 
@@ -155,62 +160,80 @@
 
   <main id="main-content" role="main">
     <section class="lead reveal">
-      <p class="descripcion"> <em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. A través del viaje en un mundo en conflicto, un país y su capital inundada y abandonada, la obra reflexiona sobre el peso del pasado, la memoria y la resistencia emocional.</p>
+      <div class="panel">
+        <div class="panel-inner">
+          <p class="descripcion"> <em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. A través del viaje en un mundo en conflicto, un país y su capital inundada y abandonada, la obra reflexiona sobre el peso del pasado, la memoria y la resistencia emocional.</p>
 
-      <div class="acciones">
-        <a href="#proyecto" class="btn">Ingresar al proyecto</a>
-        <a href="#bitacora" class="btn">Bitácora</a>
+          <div class="acciones">
+            <a href="#proyecto" class="btn">Ingresar al proyecto</a>
+            <a href="#bitacora" class="btn">Bitácora</a>
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="bitacora" class="bitacora reveal" aria-labelledby="bitacora-title">
-      <h2 id="bitacora-title" class="bitacora-titulo">Bitácora / Noticias</h2>
+      <div class="panel">
+        <div class="panel-inner">
+          <h2 id="bitacora-title" class="bitacora-titulo">Bitácora / Noticias</h2>
 
-      <article class="entrada">
-        <span class="fecha">12 · Marzo · 2025</span>
-        <h3>La ciudad sumergida</h3>
-        <p>Avances sobre el final del Tomo I. La llegada a una Capital Federal inundada implicó repensar el color, el silencio y el peso del paisaje como parte activa del relato.</p>
-      </article>
+          <article class="entrada">
+            <span class="fecha">12 · Marzo · 2025</span>
+            <h3>La ciudad sumergida</h3>
+            <p>Avances sobre el final del Tomo I. La llegada a una Capital Federal inundada implicó repensar el color, el silencio y el peso del paisaje como parte activa del relato.</p>
+          </article>
 
-      <article class="entrada">
-        <span class="fecha">28 · Febrero · 2025</span>
-        <h3>Decisiones de atmósfera y color</h3>
-        <p>La paleta fría y desaturada aparece como una forma de narrar el agotamiento, pero también la persistencia. El espacio y el agua comienzan a dialogar visualmente.</p>
-      </article>
-    </section>
-
-    <!-- Proyecto, comisiones and about sections kept mostly unchanged for brevity -->
-
-    <section id="proyecto" class="reveal" style="padding:120px 20px;">
-      <h2 class="proyecto-titulo">El Proyecto</h2>
-      <div style="max-width:760px;margin:0 auto;color:#d7e4e2;line-height:1.8;"> 
-        <p><em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. La obra se construye como un viaje físico y emocional a través de territorios colapsados, donde el paisaje, la memoria y el cuerpo se vuelven inseparables.</p>
+          <article class="entrada">
+            <span class="fecha">28 · Febrero · 2025</span>
+            <h3>Decisiones de atmósfera y color</h3>
+            <p>La paleta fría y desaturada aparece como una forma de narrar el agotamiento, pero también la persistencia. El espacio y el agua comienzan a dialogar visualmente.</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section id="comisiones" class="reveal" style="padding:120px 20px;">
-      <h2 class="comisiones-titulo">Comisiones</h2>
-      <p class="comisiones-intro">Realizo trabajos por encargo vinculados a la ilustración, el dibujo narrativo y el diseño de personajes. Cada pedido se trabaja de manera personalizada, respetando tiempos, procesos y acuerdos previos.</p>
-
-      <div class="comisiones-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;max-width:900px;margin:24px auto;">
-        <div class="comision"><h3>Ilustración</h3><p>Ilustraciones originales en técnica digital o tradicional.</p></div>
-        <div class="comision"><h3>Dibujo narrativo</h3><p>Viñetas, páginas o escenas con enfoque secuencial.</p></div>
-        <div class="comision"><h3>Personajes</h3><p>Diseño y desarrollo de personajes.</p></div>
+    <section id="proyecto" class="reveal" style="padding:40px 20px 80px;">
+      <div class="panel">
+        <div class="panel-inner">
+          <h2 class="proyecto-titulo">El Proyecto</h2>
+          <div style="max-width:760px;margin:0 auto;color:#d7e4e2;line-height:1.8;"> 
+            <p><em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. La obra se construye como un viaje físico y emocional a través de territorios colapsados, donde el paisaje, la memoria y el cuerpo se vuelven inseparables.</p>
+          </div>
+        </div>
       </div>
-
-      <form class="formulario-comisiones" action="https://formspree.io/f/maqwlbqw" method="POST" style="max-width:600px;margin:32px auto 80px;text-align:left;" aria-label="Formulario de comisiones">
-        <div class="campo"><label for="nombre">Nombre y apellido</label><input type="text" id="nombre" name="nombre" required></div>
-        <div class="campo"><label for="email">E-mail</label><input type="email" id="email" name="email" required></div>
-        <div class="campo"><label for="mensaje">Descripción del pedido</label><textarea id="mensaje" name="mensaje" rows="5" required></textarea></div>
-        <input type="hidden" name="_subject" value="Nueva consulta de comisión">
-        <button type="submit" class="btn">Enviar consulta</button>
-      </form>
     </section>
 
-    <section id="sobre-mi" class="reveal" style="padding:120px 20px;">
-      <h2 class="sobre-mi-titulo">Sobre mí</h2>
-      <div style="max-width:720px;margin:0 auto;color:#d7e4e2;line-height:1.8;">
-        <p>Soy Mateo Castellano, artista visual y estudiante de la Licenciatura en Artes Visuales. Mi trabajo se centra en la historieta, el dibujo narrativo y la construcción de mundos como forma de reflexión sobre la memoria, el territorio y la responsabilidad individual.</p>
+    <section id="comisiones" class="reveal" style="padding:40px 20px 80px;">
+      <div class="panel">
+        <div class="panel-inner">
+          <h2 class="comisiones-titulo">Comisiones</h2>
+          <p class="comisiones-intro">Realizo trabajos por encargo vinculados a la ilustración, el dibujo narrativo y el diseño de personajes. Cada pedido se trabaja de manera personalizada, respetando tiempos, procesos y acuerdos previos.</p>
+
+          <div class="comisiones-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;max-width:900px;margin:24px auto;">
+            <div class="comision"><h3>Ilustración</h3><p>Ilustraciones originales en técnica digital o tradicional.</p></div>
+            <div class="comision"><h3>Dibujo narrativo</h3><p>Viñetas, páginas o escenas con enfoque secuencial.</p></div>
+            <div class="comision"><h3>Personajes</h3><p>Diseño y desarrollo de personajes.</p></div>
+          </div>
+
+          <form class="formulario-comisiones" action="https://formspree.io/f/maqwlbqw" method="POST" style="max-width:600px;margin:32px auto 0;text-align:left;" aria-label="Formulario de comisiones">
+            <div class="campo"><label for="nombre">Nombre y apellido</label><input type="text" id="nombre" name="nombre" required></div>
+            <div class="campo"><label for="email">E-mail</label><input type="email" id="email" name="email" required></div>
+            <div class="campo"><label for="mensaje">Descripción del pedido</label><textarea id="mensaje" name="mensaje" rows="5" required></textarea></div>
+            <input type="hidden" name="_subject" value="Nueva consulta de comisión">
+            <button type="submit" class="btn">Enviar consulta</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre-mi" class="reveal" style="padding:40px 20px 80px;">
+      <div class="panel">
+        <div class="panel-inner">
+          <h2 class="sobre-mi-titulo">Sobre mí</h2>
+          <div style="max-width:720px;margin:0 auto;color:#d7e4e2;line-height:1.8;">
+            <p>Soy Mateo Castellano, artista visual y estudiante de la Licenciatura en Artes Visuales. Mi trabajo se centra en la historieta, el dibujo narrativo y la construcción de mundos como forma de reflexión sobre la memoria, el territorio y la responsabilidad individual.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -245,7 +268,6 @@
         entries.forEach(entry => {
           if(entry.isIntersecting){
             entry.target.classList.add('is-visible');
-            // optionally unobserve to keep performance
             io.unobserve(entry.target);
           }
         });
@@ -269,25 +291,22 @@
         }
       }, { passive: true });
 
-      // Countdown logic with flip animation
+      // Countdown logic with smoother flip animation
       const lanzamiento = new Date('March 20, 2026 00:00:00').getTime();
       const diasEl = document.getElementById('dias');
       const horasEl = document.getElementById('horas');
       const minutosEl = document.getElementById('minutos');
       const segundosEl = document.getElementById('segundos');
 
-      let prev = { d:null, h:null, m:null, s:null };
-
       function setAndFlip(el, value){
         if(!el) return;
         if(el.textContent !== value){
-          // add temporary class to animate
-          el.classList.add('flip-anim');
-          // force reflow
-          void el.offsetWidth;
-          el.textContent = value;
-          // remove class to let transition animate back to neutral
-          setTimeout(()=> el.classList.remove('flip-anim'), 700);
+          el.classList.add('is-flipping');
+          // after a short delay, swap value and let CSS animate back
+          setTimeout(() => {
+            el.textContent = value;
+            el.classList.remove('is-flipping');
+          }, 110);
         } else {
           el.textContent = value;
         }
@@ -311,12 +330,10 @@
         const m = String(minutos).padStart(2,'0');
         const s = String(segundos).padStart(2,'0');
 
-        if(d !== prev.d) setAndFlip(diasEl, d); else diasEl.textContent = d;
-        if(h !== prev.h) setAndFlip(horasEl, h); else horasEl.textContent = h;
-        if(m !== prev.m) setAndFlip(minutosEl, m); else minutosEl.textContent = m;
-        if(s !== prev.s) setAndFlip(segundosEl, s); else segundosEl.textContent = s;
-
-        prev = { d, h, m, s };
+        setAndFlip(diasEl, d);
+        setAndFlip(horasEl, h);
+        setAndFlip(minutosEl, m);
+        setAndFlip(segundosEl, s);
       }
 
       updateCounter();
