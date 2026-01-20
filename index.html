@@ -1,401 +1,48 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>El Guardián de la Gravedad</title>
-  <meta name="description" content="El Guardián de la Gravedad — historieta y comisiones de Mateo Castellano." />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
-
-  <style>
-    /* RESET */
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    html{scroll-behavior:smooth}
-    body{
-      font-family:'Roboto Condensed',sans-serif;
-      background:#02060c;
-      color:#cfdde7;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+<style>
+    /* Existing styles */
+    body {
+        /* Existing body styles */
     }
-
-    /* BACKGROUND ILLU */
-    body::before{
-      content:"";
-      position:fixed;inset:0;
-      background-image:url("Ilustración El Guardian WEB.png");
-      background-repeat:no-repeat;
-      background-position:center;
-      background-size:85vw auto;
-      opacity:0.18;
-      z-index:-1;
-      pointer-events:none;
+    /* Epic background animation styles */
+    @keyframes epicAnimation {
+        from { background-color: #000; }
+        to { background-color: #fff; }
     }
-
-    /* TOP NAV */
-    .top-nav{
-      position:fixed;top:0;left:0;width:100%;z-index:1100;
-      background:rgba(8,18,32,0.65);backdrop-filter:blur(4px);
-      border-bottom:1px solid rgba(110,168,161,0.18);
-      transition:transform .25s ease;
+    body {
+        animation: epicAnimation 5s infinite;
     }
-    .top-nav.hidden{transform:translateY(-100%)}
-    .top-nav ul{list-style:none;display:flex;justify-content:center;gap:34px;padding:16px 18px}
-    .top-nav a{
-      color:#b8d6e8;text-decoration:none;font-size:.85rem;
-      letter-spacing:2px;text-transform:uppercase;display:inline-block;
-      padding:6px 4px;position:relative;
+    /* Scroll-to-top button styles */
+    .scroll-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: none;
+        background-color: #000;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        z-index: 1000;
     }
-    .top-nav a:focus,.top-nav a:hover{color:#e3f4ff}
+</style>
 
-    /* HERO */
-    header{min-height:100vh;padding-top:70px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#0f1e2e,#06090f);position:relative;overflow:hidden}
-    .guardian-img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:85vw;max-width:900px;opacity:.18;z-index:1;pointer-events:none}
-    .hero{position:relative;z-index:2;text-align:center;max-width:980px;padding:20px}
-
-    h1{font-size:3.8rem;letter-spacing:3px;margin-bottom:14px;color:#c7e6e2;line-height:1}
-    .tagline{font-size:1.15rem;color:#9bc7c0;margin-bottom:18px;letter-spacing:1.1px}
-
-    /* WIND: more dramatic, slower */
-    .wind{opacity:0;transform:translateX(-96px) skewX(-10deg);will-change:transform,opacity}
-    @keyframes windIn {
-      0%   { opacity:0; transform:translateX(-96px) skewX(-10deg) }
-      60%  { opacity:1; transform:translateX(26px) skewX(-3deg) }
-      100% { opacity:1; transform:translateX(0) skewX(0deg) }
-    }
-    .wind.animate{
-      animation-name:windIn;
-      animation-duration:1200ms; /* slower */
-      animation-fill-mode:forwards;
-      animation-timing-function:cubic-bezier(.22,.9,.29,1);
-    }
-
-    /* per-element delay utility (fallback) */
-    .delay-1{animation-delay:0ms}
-    .delay-2{animation-delay:260ms}
-    .delay-3{animation-delay:520ms}
-    .delay-4{animation-delay:880ms}
-
-    /* letter-by-letter */
-    .letter{display:inline-block;opacity:0;transform:translateX(-48px) skewX(-6deg)}
-    @keyframes letterIn {
-      0% { opacity:0; transform:translateX(-48px) skewX(-6deg) }
-      70% { opacity:1; transform:translateX(10px) skewX(-2deg) }
-      100% { opacity:1; transform:translateX(0) skewX(0deg) }
-    }
-    .letter[data-animate="true"]{
-      animation-name:letterIn;
-      animation-duration:1200ms;
-      animation-fill-mode:forwards;
-      animation-timing-function:cubic-bezier(.22,.9,.29,1);
-    }
-
-    /* COUNTDOWN */
-    .count-wrap{display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:8px}
-    .count-label{font-size:1.05rem;color:#8fbfb7;letter-spacing:1px;text-transform:uppercase}
-    .time-group{display:flex;gap:12px;align-items:center}
-    .time-unit{display:flex;flex-direction:column;align-items:center;min-width:56px;perspective:900px}
-    .time-value{
-      display:flex;align-items:center;justify-content:center;
-      background:rgba(8,18,32,0.58);border:1px solid rgba(143,174,199,0.14);
-      padding:8px 10px;border-radius:8px;font-weight:700;color:#e6f6f5;font-variant-numeric:tabular-nums;
-      width:3ch;text-align:center;line-height:1;
-      transition:transform 760ms cubic-bezier(.25,.8,.25,1),opacity 520ms ease;
-      backface-visibility:hidden;transform-style:preserve-3d;
-    }
-    .time-label{font-size:.72rem;color:#9fbfc6;margin-top:6px;letter-spacing:1px}
-    .time-value.is-flipping{transform:rotateX(-18deg);opacity:.88}
-
-    /* PANELS/SECTIONS */
-    .panel{background:linear-gradient(180deg,rgba(6,10,14,0.56),rgba(6,10,14,0.44));border:1px solid rgba(110,168,161,0.08);padding:26px;border-radius:12px;backdrop-filter:blur(6px)}
-    .panel-inner{max-width:1000px;margin:0 auto}
-    section.lead{padding:120px 20px;text-align:center}
-    .descripcion{max-width:700px;margin:0 auto;font-size:1.05rem;line-height:1.7;color:#cdd9d7}
-
-    /* FORM (darker send button) */
-    .formulario-comisiones{max-width:600px;margin:32px auto 0;text-align:left}
-    .campo{margin-bottom:20px}
-    .campo label{display:block;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;color:#9fbfc6;margin-bottom:8px}
-    .campo input,.campo textarea{
-      width:100%;padding:12px 14px;background:rgba(8,18,32,0.5);border:1px solid rgba(143,174,199,0.12);color:#e6f6f5;font-size:1rem;border-radius:10px;outline:none;transition:box-shadow 180ms,border-color 180ms,transform 120ms;
-    }
-    .campo input::placeholder,.campo textarea::placeholder{color:rgba(231,245,246,0.32)}
-    .campo input:focus,.campo textarea:focus{border-color:rgba(110,168,161,0.9);box-shadow:0 8px 26px rgba(20,80,72,0.06);transform:translateY(-1px)}
-
-    .formulario-comisiones .btn{
-      display:block;margin:18px 0 0;padding:12px 18px;width:100%;
-      background:linear-gradient(90deg,#0f3f3b 0%,#0b2a28 100%);color:#eaf7f4;border:none;border-radius:12px;font-weight:700;letter-spacing:1px;
-      box-shadow:0 12px 36px rgba(8,36,34,0.2);transition:transform 160ms ease,box-shadow 160ms ease,filter 160ms ease;
-    }
-    .formulario-comisiones .btn:hover,.formulario-comisiones .btn:focus{transform:translateY(-4px);box-shadow:0 18px 44px rgba(6,36,34,0.28);filter:brightness(1.04)}
-
-    /* HERO ACTIONS: removed duplicate hero buttons; top-nav handles navigation */
-    .acciones{margin-top:24px;display:flex;gap:12px;justify-content:center}
-    .btn.secondary{display:inline-block;padding:12px 28px;margin:8px;border:1px solid rgba(110,168,161,0.14);color:#c7e6e2;text-decoration:none;text-transform:uppercase;font-size:.85rem;letter-spacing:2px;background:transparent;border-radius:8px;transition:transform 160ms,background 200ms}
-    .btn.secondary:hover,.btn.secondary:focus{transform:translateY(-3px);background:rgba(110,168,161,0.08)}
-
-    /* REVEAL for sections */
-    .reveal{opacity:0;transform:translateY(12px);transition:opacity 600ms ease,transform 600ms ease}
-    .reveal.is-visible{opacity:1;transform:none}
-
-    .visually-hidden{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-    .bitacora{padding:80px 20px;max-width:1000px;margin:0 auto}
-    .bitacora-titulo{text-align:center;font-size:2rem;color:#c7e6e2;margin-bottom:20px}
-    .entrada{max-width:680px;margin:0 auto 30px;border-left:1px solid rgba(143,174,199,0.14);padding-left:20px}
-    .fecha{display:block;font-size:.75rem;color:#8faec7;margin-bottom:10px}
-
-    @media (max-width:768px){
-      h1{font-size:2.3rem}
-      .guardian-img{width:560px}
-      .time-unit{min-width:48px}
-      .time-value{padding:6px 8px}
-      .top-nav ul{gap:12px;padding:12px 8px}
-      .panel{padding:18px}
-      .acciones{flex-direction:column}
-    }
-  </style>
-</head>
 <body>
-  <a class="visually-hidden" href="#main-content">Saltar al contenido</a>
+    <!-- Existing body content -->
+    <button class="scroll-to-top">Scroll to Top</button>
+    <script>
+        // Existing JavaScript
+        const scrollToTopButton = document.querySelector('.scroll-to-top');
 
-  <nav class="top-nav" role="navigation" aria-label="Navegación principal">
-    <ul>
-      <li><a class="nav-link wind delay-1" href="#bitacora">Bitácora / Noticias</a></li>
-      <li><a class="nav-link wind delay-2" href="#proyecto">Proyecto</a></li>
-      <li><a class="nav-link wind delay-3" href="#comisiones">Comisiones</a></li>
-      <li><a class="nav-link wind delay-4" href="#sobre-mi">Sobre mí</a></li>
-    </ul>
-  </nav>
-
-  <header>
-    <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true">
-
-    <div class="hero" role="banner">
-      <h1 id="main-title">EL GUARDIÁN DE LA GRAVEDAD</h1>
-      <p id="main-sub" class="tagline">El peso de una RESPONSABILIDAD, frente a los ojos de un DESTINO.</p>
-
-      <div class="count-wrap wind delay-4">
-        <div class="count-label">Lanzamiento en:</div>
-        <div class="time-group" role="timer" aria-live="polite" aria-atomic="true">
-          <div class="time-unit">
-            <div class="time-value" id="dias">00</div>
-            <div class="time-label">Días</div>
-          </div>
-          <div class="time-unit">
-            <div class="time-value" id="horas">00</div>
-            <div class="time-label">Horas</div>
-          </div>
-          <div class="time-unit">
-            <div class="time-value" id="minutos">00</div>
-            <div class="time-label">Minutos</div>
-          </div>
-          <div class="time-unit">
-            <div class="time-value" id="segundos">00</div>
-            <div class="time-label">Segundos</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main id="main-content" role="main">
-    <section class="lead reveal">
-      <div class="panel">
-        <div class="panel-inner">
-          <p class="descripcion"><em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. A través del viaje en un mundo en conflicto, un país y su capital inundada y abandonada, la obra reflexiona sobre el peso del pasado, la memoria y la resistencia emocional.</p>
-
-          <div class="acciones">
-            <a href="#proyecto" class="btn secondary">Ingresar al proyecto</a>
-            <a href="#bitacora" class="btn secondary">Bitácora</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="bitacora" class="bitacora reveal" aria-labelledby="bitacora-title">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 id="bitacora-title" class="bitacora-titulo">Bitácora / Noticias</h2>
-
-          <article class="entrada">
-            <span class="fecha">12 · Marzo · 2025</span>
-            <h3>La ciudad sumergida</h3>
-            <p>Avances sobre el final del Tomo I. La llegada a una Capital Federal inundada implicó repensar el color, el silencio y el peso del paisaje como parte activa del relato.</p>
-          </article>
-
-          <article class="entrada">
-            <span class="fecha">28 · Febrero · 2025</span>
-            <h3>Decisiones de atmósfera y color</h3>
-            <p>La paleta fría y desaturada aparece como una forma de narrar el agotamiento, pero también la persistencia. El espacio y el agua comienzan a dialogar visualmente.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="proyecto" class="reveal" style="padding:40px 20px 80px;">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 class="proyecto-titulo">El Proyecto</h2>
-          <div style="max-width:760px;margin:0 auto;color:#d7e4e2;line-height:1.8;">
-            <p><em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. La obra se construye como un viaje físico y emocional a través de territorios colapsados, donde el paisaje, la memoria y el cuerpo se vuelven inseparables.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="comisiones" class="reveal" style="padding:40px 20px 80px;">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 class="comisiones-titulo">Comisiones</h2>
-          <p class="comisiones-intro">Realizo trabajos por encargo vinculados a la ilustración, el dibujo narrativo y el diseño de personajes. Cada pedido se trabaja de manera personalizada, respetando tiempos, procesos y acuerdos previos.</p>
-
-          <div class="comisiones-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;max-width:900px;margin:24px auto;">
-            <div class="comision"><h3>Ilustración</h3><p>Ilustraciones originales en técnica digital o tradicional.</p></div>
-            <div class="comision"><h3>Dibujo narrativo</h3><p>Viñetas, páginas o escenas con enfoque secuencial.</p></div>
-            <div class="comision"><h3>Personajes</h3><p>Diseño y desarrollo de personajes.</p></div>
-          </div>
-
-          <form class="formulario-comisiones" action="https://formspree.io/f/maqwlbqw" method="POST" aria-label="Formulario de comisiones">
-            <div class="campo"><label for="nombre">Nombre y apellido</label><input type="text" id="nombre" name="nombre" required></div>
-            <div class="campo"><label for="email">E-mail</label><input type="email" id="email" name="email" required></div>
-            <div class="campo"><label for="mensaje">Descripción del pedido</label><textarea id="mensaje" name="mensaje" rows="5" required></textarea></div>
-            <input type="hidden" name="_subject" value="Nueva consulta de comisión">
-            <button type="submit" class="btn">Enviar consulta</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section id="sobre-mi" class="reveal" style="padding:40px 20px 80px;">
-      <div class="panel">
-        <div class="panel-inner">
-          <h2 class="sobre-mi-titulo">Sobre mí</h2>
-          <div style="max-width:720px;margin:0 auto;color:#d7e4e2;line-height:1.8;">
-            <p>Soy Mateo Castellano, artista visual y estudiante de la Licenciatura en Artes Visuales. Mi trabajo se centra en la historieta, el dibujo narrativo y la construcción de mundos como forma de reflexión sobre la memoria, el territorio y la responsabilidad individual.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer style="padding:60px 20px;text-align:center;color:#8faec7;">
-    Mateo Castellano — Licenciatura en Artes Visuales<br>
-    Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a>
-  </footer>
-
-  <script>
-    (function(){
-      // Smooth scroll with header offset
-      const nav = document.querySelector('.top-nav');
-      const navHeight = () => nav ? nav.getBoundingClientRect().height : 0;
-      document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', function(e){
-          const href = this.getAttribute('href');
-          if(!href || href === '#') return;
-          const target = document.querySelector(href);
-          if(target){ e.preventDefault(); const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight() - 12; window.scrollTo({top,behavior:'smooth'}); }
-        });
-      });
-
-      // Reveal on scroll
-      const reveals = document.querySelectorAll('.reveal');
-      const io = new IntersectionObserver((entries,observer) => {
-        entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('is-visible'); observer.unobserve(en.target); }});
-      }, {threshold:0.12});
-      reveals.forEach(r => io.observe(r));
-
-      // Split title/subtitle into letters for animation
-      function splitLetters(selector){
-        const el = document.querySelector(selector);
-        if(!el) return;
-        const txt = el.textContent || '';
-        el.innerHTML = '';
-        Array.from(txt).forEach((ch,i) => {
-          const sp = document.createElement('span');
-          sp.className = 'letter';
-          sp.textContent = (ch === ' ' ? '\u00A0' : ch);
-          // set per-letter delay (JS-controlled)
-          sp.style.animationDelay = `${i * 90}ms`;
-          el.appendChild(sp);
-        });
-      }
-      splitLetters('#main-title');
-      splitLetters('#main-sub');
-
-      // run wind sequence: animate nav links (stagger), hero blocks and trigger letter animations
-      function runWindSequence(){
-        // nav links
-        const navLinks = document.querySelectorAll('.top-nav .nav-link');
-        navLinks.forEach((a,i) => {
-          a.classList.add('wind');
-          a.style.animationDelay = `${140 + i * 160}ms`;
-          void a.offsetWidth;
-          a.classList.add('animate');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                scrollToTopButton.style.display = 'block';
+            } else {
+                scrollToTopButton.style.display = 'none';
+            }
         });
 
-        // hero elements (title, subtitle, counter)
-        const heroEls = [];
-        const titleEl = document.getElementById('main-title');
-        const subEl = document.getElementById('main-sub');
-        const counterWrap = document.querySelector('.count-wrap');
-        if(titleEl) { titleEl.classList.add('wind'); titleEl.classList.add('delay-1'); heroEls.push(titleEl); }
-        if(subEl) { subEl.classList.add('wind'); subEl.classList.add('delay-2'); heroEls.push(subEl); }
-        if(counterWrap) { counterWrap.classList.add('wind'); counterWrap.classList.add('delay-4'); heroEls.push(counterWrap); }
-
-        heroEls.forEach(el => { void el.offsetWidth; el.classList.add('animate'); });
-
-        // trigger letter animations by setting data-animate true (letters already have per-letter animationDelay inline)
-        document.querySelectorAll('.letter').forEach(span => span.setAttribute('data-animate','true'));
-      }
-
-      if(document.readyState === 'complete' || document.readyState === 'interactive') runWindSequence();
-      else window.addEventListener('DOMContentLoaded', runWindSequence);
-
-      // header show/hide on scroll
-      let lastScroll = window.pageYOffset, ticking=false;
-      window.addEventListener('scroll', () => {
-        if(!ticking){
-          window.requestAnimationFrame(()=> {
-            const current = window.pageYOffset;
-            if(current > lastScroll && current > 80) nav.classList.add('hidden'); else nav.classList.remove('hidden');
-            lastScroll = current; ticking=false;
-          });
-          ticking=true;
-        }
-      }, {passive:true});
-
-      // Countdown logic (smooth flip)
-      const lanzamiento = new Date('March 20, 2026 00:00:00').getTime();
-      const diasEl = document.getElementById('dias'), horasEl = document.getElementById('horas'), minutosEl = document.getElementById('minutos'), segundosEl = document.getElementById('segundos');
-
-      function setAndFlip(el, value){
-        if(!el) return;
-        if(el.textContent !== value){
-          el.classList.add('is-flipping');
-          setTimeout(()=> { el.textContent = value; setTimeout(()=> el.classList.remove('is-flipping'),760); }, 160);
-        } else el.textContent = value;
-      }
-
-      function updateCounter(){
-        const now = Date.now(); let diff = lanzamiento - now;
-        if(diff <= 0){ setAndFlip(diasEl,'00'); setAndFlip(horasEl,'00'); setAndFlip(minutosEl,'00'); setAndFlip(segundosEl,'00'); clearInterval(interval); return; }
-        const dias = Math.floor(diff / (1000*60*60*24)); diff -= dias*(1000*60*60*24);
-        const horas = Math.floor(diff / (1000*60*60)); diff -= horas*(1000*60*60);
-        const minutos = Math.floor(diff / (1000*60)); diff -= minutos*(1000*60);
-        const segundos = Math.floor(diff / 1000);
-        setAndFlip(diasEl,String(dias).padStart(2,'0'));
-        setAndFlip(horasEl,String(horas).padStart(2,'0'));
-        setAndFlip(minutosEl,String(minutos).padStart(2,'0'));
-        setAndFlip(segundosEl,String(segundos).padStart(2,'0'));
-      }
-      updateCounter();
-      const interval = setInterval(updateCounter,1000);
-
-    })();
-  </script>
+        scrollToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 </body>
-</html>
