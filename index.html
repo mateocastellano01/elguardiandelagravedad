@@ -490,9 +490,19 @@
   }
 
   .contador {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
+    color: #8fbfb7;
+    letter-spacing: 1px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
   }
 
+ .contador-label {
+   opacity: 0.75;
+ } 
   .guardian-img {
     width: 560px;
     opacity: 0.12;
@@ -667,7 +677,8 @@
       </p>
 
       <div class="contador viento delay-5">
-        Lanzamiento — <span id="tiempo"></span>
+      <span class="contador-label">Lanzamiento en:</span>
+      <span id="tiempo"></span>
       </div>
 
       <div class="flip">
