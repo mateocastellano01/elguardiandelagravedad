@@ -342,6 +342,12 @@
 
   <script>
     (function(){
+      // Constantes de tiempo para animaciones
+      const BG_ANIMATION_DELAY = 200;  // Delay antes de ejecutar wind sequence
+      const BG_LOAD_TIMEOUT = 1200;    // Timeout fallback para carga de imagen (1.2s)
+      const SCROLL_TO_TOP_DURATION = 600;  // Duración del scroll suave
+      const FOCUS_DELAY = 100;  // Delay antes de remover tabindex
+
       // Precargar imagen de fondo con fallback timeout
       let bgLoaded = false;
       let windSequenceRan = false;
@@ -365,12 +371,12 @@
       bgImage.onload = function(){
         triggerBgAnimation();
         // Ejecutar secuencia wind con pequeño delay después de que cargue el fondo
-        setTimeout(maybeRunWindSequence, 200);
+        setTimeout(maybeRunWindSequence, BG_ANIMATION_DELAY);
       };
       bgImage.onerror = function(){
         // Si falla la carga, igual mostrar el fondo
         triggerBgAnimation();
-        setTimeout(maybeRunWindSequence, 200);
+        setTimeout(maybeRunWindSequence, BG_ANIMATION_DELAY);
       };
       bgImage.src = "Ilustración El Guardian WEB.png";
 
@@ -378,7 +384,7 @@
       setTimeout(function(){
         triggerBgAnimation();
         maybeRunWindSequence();
-      }, 1200);
+      }, BG_LOAD_TIMEOUT);
 
       // Smooth scroll with header offset
       const nav = document.querySelector('.top-nav');
@@ -505,9 +511,9 @@
               mainContent.setAttribute('tabindex','-1');
               mainContent.focus();
               // Remover tabindex después de foco para no afectar navegación
-              setTimeout(function(){ mainContent.removeAttribute('tabindex'); }, 100);
+              setTimeout(function(){ mainContent.removeAttribute('tabindex'); }, FOCUS_DELAY);
             }
-          }, 600);
+          }, SCROLL_TO_TOP_DURATION);
         });
 
         // Soporte de teclado (Enter/Space)
