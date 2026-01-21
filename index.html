@@ -31,9 +31,15 @@
       background-repeat:no-repeat;
       background-position:center;
       background-size:85vw auto;
-      opacity:0.18;
+      opacity:0;
       z-index:-1;
       pointer-events:none;
+      animation:epicFadeIn 2.8s ease-out forwards;
+    }
+    
+    @keyframes epicFadeIn {
+      0% { opacity:0; transform:scale(1.08); }
+      100% { opacity:0.18; transform:scale(1); }
     }
 
     /* TOP NAV */
@@ -143,6 +149,54 @@
     .reveal.is-visible{opacity:1;transform:none}
 
     .visually-hidden{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+    
+    /* SCROLL TO TOP BUTTON */
+    .scroll-to-top {
+      position:fixed;
+      bottom:32px;
+      right:32px;
+      width:52px;
+      height:52px;
+      background:linear-gradient(135deg,#6ea8a1,#4a8076);
+      border:1px solid rgba(199,230,226,0.2);
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(20px) scale(0.9);
+      transition:all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+      z-index:1000;
+      box-shadow:0 4px 16px rgba(110,168,161,0.3);
+    }
+    
+    .scroll-to-top.visible {
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0) scale(1);
+    }
+    
+    .scroll-to-top:hover,
+    .scroll-to-top:focus {
+      background:linear-gradient(135deg,#7eb8b0,#5a907f);
+      transform:translateY(-4px) scale(1.05);
+      box-shadow:0 8px 24px rgba(110,168,161,0.4);
+      outline:2px solid rgba(199,230,226,0.4);
+      outline-offset:2px;
+    }
+    
+    .scroll-to-top:active {
+      transform:translateY(-2px) scale(1);
+    }
+    
+    .scroll-to-top svg {
+      width:24px;
+      height:24px;
+      fill:#e6f6f5;
+    }
+    
     .bitacora{padding:80px 20px;max-width:1000px;margin:0 auto}
     .bitacora-titulo{text-align:center;font-size:2rem;color:#c7e6e2;margin-bottom:20px}
     .entrada{max-width:680px;margin:0 auto 30px;border-left:1px solid rgba(143,174,199,0.14);padding-left:20px}
@@ -287,6 +341,12 @@
     Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a>
   </footer>
 
+  <button class="scroll-to-top" aria-label="Volver al inicio">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+  </button>
+
   <script>
     (function(){
       // Smooth scroll with header offset
@@ -352,8 +412,13 @@
         document.querySelectorAll('.letter').forEach(span => span.setAttribute('data-animate','true'));
       }
 
-      if(document.readyState === 'complete' || document.readyState === 'interactive') runWindSequence();
-      else window.addEventListener('DOMContentLoaded', runWindSequence);
+      // Wait for background animation to complete before running wind sequence
+      const BACKGROUND_ANIMATION_DURATION = 2800; // matches CSS animation duration
+      if(document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(runWindSequence, BACKGROUND_ANIMATION_DURATION);
+      } else {
+        window.addEventListener('DOMContentLoaded', () => setTimeout(runWindSequence, BACKGROUND_ANIMATION_DURATION));
+      }
 
       // header show/hide on scroll
       let lastScroll = window.pageYOffset, ticking=false;
@@ -394,6 +459,32 @@
       }
       updateCounter();
       const interval = setInterval(updateCounter,1000);
+
+      // Scroll-to-top button functionality
+      const scrollToTopBtn = document.querySelector('.scroll-to-top');
+      const scrollThreshold = 400;
+
+      function toggleScrollButton() {
+        if (window.pageYOffset > scrollThreshold) {
+          scrollToTopBtn.classList.add('visible');
+        } else {
+          scrollToTopBtn.classList.remove('visible');
+        }
+      }
+
+      // Check scroll position
+      window.addEventListener('scroll', toggleScrollButton, {passive: true});
+      
+      // Scroll to top on click
+      scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // Initial check
+      toggleScrollButton();
 
     })();
   </script>
