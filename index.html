@@ -462,10 +462,10 @@
 
       // Scroll-to-top button functionality
       const scrollToTopBtn = document.querySelector('.scroll-to-top');
-      const scrollThreshold = 400;
+      const SCROLL_THRESHOLD = 400; // pixels scrolled before showing button
 
       function toggleScrollButton() {
-        if (window.pageYOffset > scrollThreshold) {
+        if (window.pageYOffset > SCROLL_THRESHOLD) {
           scrollToTopBtn.classList.add('visible');
         } else {
           scrollToTopBtn.classList.remove('visible');
