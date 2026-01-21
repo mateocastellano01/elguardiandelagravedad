@@ -174,6 +174,16 @@
       will-change:transform,opacity,filter;
     }
 
+    /* Apply epic background animation to guardian image instead of body::before when needed */
+    .guardian-img.img-epic{
+      animation-name:epicBg;
+      animation-duration:6400ms;
+      animation-timing-function:cubic-bezier(.22,.9,.29,1);
+      animation-fill-mode:forwards;
+      animation-iteration-count:1;
+      will-change:transform,opacity,filter;
+    }
+
     /* Reset / control button */
     .bg-reset-btn{
       position:fixed;right:18px;bottom:18px;z-index:1200;border-radius:12px;padding:10px 14px;background:linear-gradient(90deg,#0f3f3b,#0b2a28);color:#eaf7f4;border:1px solid rgba(110,168,161,0.12);box-shadow:0 10px 30px rgba(6,36,34,0.22);cursor:pointer;font-weight:700;font-size:.9rem;backdrop-filter:blur(4px);
@@ -352,6 +362,8 @@
 
       // run wind sequence: animate nav links (stagger), hero blocks and trigger letter animations
       function runWindSequence(){
+        if(windStarted) return;
+        windStarted = true;
         // nav links
         const navLinks = document.querySelectorAll('.top-nav .nav-link');
         navLinks.forEach((a,i) => {
@@ -376,8 +388,9 @@
         document.querySelectorAll('.letter').forEach(span => span.setAttribute('data-animate','true'));
       }
 
-      if(document.readyState === 'complete' || document.readyState === 'interactive') runWindSequence();
-      else window.addEventListener('DOMContentLoaded', runWindSequence);
+      // We'll start the epic image animation first and then trigger the "wind" sequence
+      // when the image animation finishes. Guard to ensure wind runs only once.
+      let windStarted = false;
 
       // header show/hide on scroll
       let lastScroll = window.pageYOffset, ticking=false;
@@ -436,20 +449,36 @@
       const safety = 300; // small buffer
       const when = Math.max(lastLetterDelay, navMax) + safety;
 
-      // Start epic animation after computed timeout from DOMContentLoaded/runWindSequence
-      setTimeout(startEpicBg, when);
+      // Start epic animation as soon as DOM is ready; runWindSequence will be called
+      // when the guardian image's animation ends.
+      function startEpicBg(){
+        const guardian = document.querySelector('.guardian-img');
+        if(!guardian) { if(!windStarted) { runWindSequence(); } return; }
+        if(guardian.classList.contains('img-epic')) return;
+        guardian.classList.add('img-epic');
+        const onEnd = () => { guardian.removeEventListener('animationend', onEnd); if(!windStarted) runWindSequence(); };
+        guardian.addEventListener('animationend', onEnd);
+      }
 
-      // 'Ir al inicio' button: reset background animation and scroll to top of page
+      if(document.readyState === 'complete' || document.readyState === 'interactive') startEpicBg();
+      else window.addEventListener('DOMContentLoaded', startEpicBg);
+
+      // 'Ir al inicio' button: reset guardian image animation and scroll to top
       const resetBtn = document.getElementById('bg-reset');
       resetBtn.addEventListener('click', (e)=>{
-        // remove class to allow re-trigger
-        body.classList.remove('bg-epic');
-        // force reflow then re-add to restart
-        void body.offsetWidth;
-        body.classList.add('bg-epic');
-        // scroll to top smoothly (accounts for nav height)
-        const top = 0;
-        window.scrollTo({top,behavior:'smooth'});
+        const guardian = document.querySelector('.guardian-img');
+        if(guardian){
+          guardian.classList.remove('img-epic');
+          void guardian.offsetWidth;
+          guardian.classList.add('img-epic');
+          if(!windStarted){
+            const onEnd = () => { guardian.removeEventListener('animationend', onEnd); if(!windStarted) runWindSequence(); };
+            guardian.addEventListener('animationend', onEnd);
+          }
+        } else {
+          if(!windStarted) runWindSequence();
+        }
+        window.scrollTo({top:0,behavior:'smooth'});
       });
 
     })();
