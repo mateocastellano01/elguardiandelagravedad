@@ -157,6 +157,28 @@
       .panel{padding:18px}
       .acciones{flex-direction:column}
     }
+
+    /* EPIC BACKGROUND ANIMATION (applies to body::before when activated) */
+    @keyframes epicBg {
+      0%   { transform:translateY(0) scale(1) rotate(0deg); opacity:0.18; filter:brightness(1) saturate(.98); }
+      30%  { transform:translateY(-4vh) scale(1.04) rotate(-0.25deg); opacity:0.26; filter:brightness(1.08) saturate(1.06); }
+      65%  { transform:translateY(-6vh) scale(1.08) rotate(-0.6deg); opacity:0.34; filter:brightness(1.12) saturate(1.12); }
+      100% { transform:translateY(0) scale(1) rotate(0deg); opacity:0.18; filter:brightness(1) saturate(.98); }
+    }
+    body.bg-epic::before{
+      animation-name:epicBg;
+      animation-duration:6400ms;
+      animation-timing-function:cubic-bezier(.22,.9,.29,1);
+      animation-fill-mode:forwards;
+      animation-iteration-count:1;
+      will-change:transform,opacity,filter;
+    }
+
+    /* Reset / control button */
+    .bg-reset-btn{
+      position:fixed;right:18px;bottom:18px;z-index:1200;border-radius:12px;padding:10px 14px;background:linear-gradient(90deg,#0f3f3b,#0b2a28);color:#eaf7f4;border:1px solid rgba(110,168,161,0.12);box-shadow:0 10px 30px rgba(6,36,34,0.22);cursor:pointer;font-weight:700;font-size:.9rem;backdrop-filter:blur(4px);
+    }
+    .bg-reset-btn:active{transform:translateY(1px)}
   </style>
 </head>
 <body>
@@ -287,6 +309,8 @@
     Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a>
   </footer>
 
+  <button class="bg-reset-btn" id="bg-reset" aria-label="Ir al inicio">Ir al inicio</button>
+
   <script>
     (function(){
       // Smooth scroll with header offset
@@ -395,7 +419,40 @@
       updateCounter();
       const interval = setInterval(updateCounter,1000);
 
+      // EPIC BACKGROUND: trigger after existing animations finish
+      const body = document.body;
+      // Helper to start epic bg once (after wind/letters finish)
+      function startEpicBg(){
+        if(body.classList.contains('bg-epic')) return;
+        body.classList.add('bg-epic');
+      }
+
+      // Determine when initial wind/letter animations complete.
+      // Letters: last letter delay = (count-1)*90ms + duration 1200ms
+      const letters = document.querySelectorAll('.letter');
+      const lastLetterDelay = letters.length ? ((letters.length - 1) * 90) + 1200 : 0;
+      // Nav / hero wind sequence was staggered up to ~140 + i*160 and hero durations 1200ms
+      const navMax = 140 + (document.querySelectorAll('.top-nav .nav-link').length * 160) + 1200;
+      const safety = 300; // small buffer
+      const when = Math.max(lastLetterDelay, navMax) + safety;
+
+      // Start epic animation after computed timeout from DOMContentLoaded/runWindSequence
+      setTimeout(startEpicBg, when);
+
+      // 'Ir al inicio' button: reset background animation and scroll to top of page
+      const resetBtn = document.getElementById('bg-reset');
+      resetBtn.addEventListener('click', (e)=>{
+        // remove class to allow re-trigger
+        body.classList.remove('bg-epic');
+        // force reflow then re-add to restart
+        void body.offsetWidth;
+        body.classList.add('bg-epic');
+        // scroll to top smoothly (accounts for nav height)
+        const top = 0;
+        window.scrollTo({top,behavior:'smooth'});
+      });
+
     })();
   </script>
 </body>
-    </html>
+</html>
