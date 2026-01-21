@@ -201,8 +201,30 @@
     /* Reset / control button */
     .bg-reset-btn{
       position:fixed;right:18px;bottom:18px;z-index:1200;border-radius:12px;padding:10px 14px;background:linear-gradient(90deg,#0f3f3b,#0b2a28);color:#eaf7f4;border:1px solid rgba(110,168,161,0.12);box-shadow:0 10px 30px rgba(6,36,34,0.22);cursor:pointer;font-weight:700;font-size:.9rem;backdrop-filter:blur(4px);
+      opacity:0;
+      visibility:hidden;
+      transition:opacity 420ms ease,visibility 420ms ease,transform 160ms ease;
     }
+    .bg-reset-btn.show{
+      opacity:1;
+      visibility:visible;
+    }
+    .bg-reset-btn:hover{transform:translateY(-2px)}
     .bg-reset-btn:active{transform:translateY(1px)}
+
+    /* Mute button */
+    .mute-btn{
+      position:fixed;right:18px;bottom:18px;z-index:1200;border-radius:50%;width:48px;height:48px;background:linear-gradient(90deg,#0f3f3b,#0b2a28);color:#eaf7f4;border:1px solid rgba(110,168,161,0.12);box-shadow:0 10px 30px rgba(6,36,34,0.22);cursor:pointer;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+      opacity:1;
+      visibility:visible;
+      transition:bottom 420ms ease,transform 160ms ease;
+    }
+    .mute-btn.moved-up{
+      bottom:80px;
+    }
+    .mute-btn:hover{transform:translateY(-2px) scale(1.05)}
+    .mute-btn:active{transform:translateY(1px)}
+    .mute-btn.muted{opacity:0.5}
   </style>
 </head>
 <body>
@@ -333,10 +355,50 @@
     Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a>
   </footer>
 
+  <button class="mute-btn" id="mute-btn" aria-label="Silenciar sonido" title="Silenciar/Activar sonido">🔊</button>
   <button class="bg-reset-btn" id="bg-reset" aria-label="Ir al inicio">Ir al inicio</button>
 
   <script>
     (function(){
+      // Sound system with Web Audio API
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioCtx = new AudioContext();
+      let isMuted = false;
+      let volumeMultiplier = 1; // Dynamic volume based on scroll
+
+      function playFlipSound(){
+        if(isMuted) return;
+        try{
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          // Epic mechanical flip sound
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08);
+          
+          const baseVolume = 0.35;
+          const dynamicVolume = Math.max(0.01, baseVolume * volumeMultiplier);
+          gain.gain.setValueAtTime(dynamicVolume, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+          
+          osc.start(audioCtx.currentTime);
+          osc.stop(audioCtx.currentTime + 0.08);
+        } catch(e){ console.log('Audio error:', e); }
+      }
+
+      // Mute button control
+      const muteBtn = document.getElementById('mute-btn');
+      muteBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        muteBtn.textContent = isMuted ? '🔇' : '🔊';
+        muteBtn.classList.toggle('muted', isMuted);
+        muteBtn.setAttribute('aria-label', isMuted ? 'Activar sonido' : 'Silenciar sonido');
+      });
+
       // Smooth scroll with header offset
       const nav = document.querySelector('.top-nav');
       const navHeight = () => nav ? nav.getBoundingClientRect().height : 0;
@@ -412,6 +474,11 @@
         if(!ticking){
           window.requestAnimationFrame(()=> {
             const current = window.pageYOffset;
+            
+            // Calculate volume based on scroll (100% at top, decreases as you scroll down)
+            // Volume reaches minimum (10%) at 2000px scroll
+            volumeMultiplier = Math.max(0.1, 1 - (current / 2000));
+            
             if(current > lastScroll && current > 80) nav.classList.add('hidden'); else nav.classList.remove('hidden');
             lastScroll = current; ticking=false;
           });
@@ -426,6 +493,7 @@
       function setAndFlip(el, value){
         if(!el) return;
         if(el.textContent !== value){
+          playFlipSound();
           el.classList.add('is-flipping');
           setTimeout(()=> { el.textContent = value; setTimeout(()=> el.classList.remove('is-flipping'),760); }, 160);
         } else el.textContent = value;
@@ -469,8 +537,20 @@
       if(document.readyState === 'complete' || document.readyState === 'interactive') startEpicBg();
       else window.addEventListener('DOMContentLoaded', startEpicBg);
 
-      // 'Ir al inicio' button: reset guardian image animation and scroll to top
+      // 'Ir al inicio' button: show on scroll down with fade-in
       const resetBtn = document.getElementById('bg-reset');
+      
+      // Show/hide buttons based on scroll position
+      window.addEventListener('scroll', () => {
+        if(window.pageYOffset > 300){
+          resetBtn.classList.add('show');
+          muteBtn.classList.add('moved-up');
+        } else {
+          resetBtn.classList.remove('show');
+          muteBtn.classList.remove('moved-up');
+        }
+      }, {passive:true});
+
       resetBtn.addEventListener('click', (e)=>{
         const guardian = document.querySelector('.guardian-img');
         if(guardian){
