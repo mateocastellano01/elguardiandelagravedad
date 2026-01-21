@@ -355,7 +355,7 @@
     Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a>
   </footer>
 
-  <button class="mute-btn" id="mute-btn" aria-label="Silenciar sonido" title="Silenciar/Activar sonido">🔊</button>
+  <button class="mute-btn muted" id="mute-btn" aria-label="Activar sonido" title="Silenciar/Activar sonido">🔇</button>
   <button class="bg-reset-btn" id="bg-reset" aria-label="Ir al inicio">Ir al inicio</button>
 
   <script>
@@ -363,7 +363,7 @@
       // Sound system with Web Audio API
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       const audioCtx = new AudioContext();
-      let isMuted = false;
+      let isMuted = true; // Start muted by default
       let volumeMultiplier = 1; // Dynamic volume based on scroll
 
       function playFlipSound(){
