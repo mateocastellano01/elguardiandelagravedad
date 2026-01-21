@@ -31,9 +31,19 @@
       background-repeat:no-repeat;
       background-position:center;
       background-size:85vw auto;
-      opacity:0.18;
+      opacity:0;
       z-index:-1;
       pointer-events:none;
+      transform:scale(0.7) rotate(-5deg);
+      filter:blur(20px);
+      transition:opacity 2s cubic-bezier(0.22, 0.9, 0.29, 1), 
+                 transform 2.5s cubic-bezier(0.22, 0.9, 0.29, 1),
+                 filter 2s cubic-bezier(0.22, 0.9, 0.29, 1);
+    }
+    body.bg-loaded::before{
+      opacity:0.18;
+      transform:scale(1) rotate(0deg);
+      filter:blur(0px);
     }
 
     /* TOP NAV */
@@ -141,6 +151,53 @@
     /* REVEAL for sections */
     .reveal{opacity:0;transform:translateY(12px);transition:opacity 600ms ease,transform 600ms ease}
     .reveal.is-visible{opacity:1;transform:none}
+
+    /* SCROLL TO TOP BUTTON */
+    .scroll-to-top{
+      position:fixed;
+      bottom:30px;
+      right:30px;
+      width:50px;
+      height:50px;
+      background:linear-gradient(135deg, #0f3f3b 0%, #0b2a28 100%);
+      border:1px solid rgba(110,168,161,0.3);
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      z-index:1000;
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(20px) scale(0.8);
+      transition:opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background 0.2s ease;
+      box-shadow:0 4px 12px rgba(0,0,0,0.3);
+    }
+    .scroll-to-top.visible{
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0) scale(1);
+    }
+    .scroll-to-top:hover{
+      background:linear-gradient(135deg, #14524c 0%, #0f3630 100%);
+      transform:translateY(-3px) scale(1.05);
+      box-shadow:0 6px 20px rgba(0,0,0,0.4);
+    }
+    .scroll-to-top::before{
+      content:"↑";
+      color:#eaf7f4;
+      font-size:24px;
+      font-weight:bold;
+    }
+    
+    @media (max-width:768px){
+      .scroll-to-top{
+        bottom:20px;
+        right:20px;
+        width:45px;
+        height:45px;
+      }
+    }
 
     .visually-hidden{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
     .bitacora{padding:80px 20px;max-width:1000px;margin:0 auto}
@@ -287,6 +344,8 @@
     Contacto: <a href="mailto:mateocastellano01@gmail.com" style="color:inherit;text-decoration:underline;">mateocastellano01@gmail.com</a>
   </footer>
 
+  <button class="scroll-to-top" aria-label="Volver arriba" title="Volver arriba"></button>
+
   <script>
     (function(){
       // Smooth scroll with header offset
@@ -355,6 +414,11 @@
       if(document.readyState === 'complete' || document.readyState === 'interactive') runWindSequence();
       else window.addEventListener('DOMContentLoaded', runWindSequence);
 
+      // trigger background animation after other animations complete
+      setTimeout(() => {
+        document.body.classList.add('bg-loaded');
+      }, 1800); // after the wind animations (1200ms animation + 880ms max delay)
+
       // header show/hide on scroll
       let lastScroll = window.pageYOffset, ticking=false;
       window.addEventListener('scroll', () => {
@@ -394,6 +458,26 @@
       }
       updateCounter();
       const interval = setInterval(updateCounter,1000);
+
+      // scroll-to-top button functionality
+      const scrollToTopBtn = document.querySelector('.scroll-to-top');
+      
+      // show/hide button based on scroll position
+      window.addEventListener('scroll', () => {
+        if(window.pageYOffset > 300){
+          scrollToTopBtn.classList.add('visible');
+        } else {
+          scrollToTopBtn.classList.remove('visible');
+        }
+      }, {passive:true});
+
+      // scroll to top on click
+      scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
 
     })();
   </script>
