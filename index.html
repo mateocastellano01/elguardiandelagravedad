@@ -197,6 +197,9 @@
         width:45px;
         height:45px;
       }
+      .scroll-to-top::before{
+        font-size:21px;
+      }
     }
 
     .visually-hidden{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -415,9 +418,11 @@
       else window.addEventListener('DOMContentLoaded', runWindSequence);
 
       // trigger background animation after other animations complete
+      // Timing: 1200ms animation + 880ms max delay = 2080ms, using 1800ms for overlap
+      const BG_ANIMATION_DELAY = 1800;
       setTimeout(() => {
         document.body.classList.add('bg-loaded');
-      }, 1800); // after the wind animations (1200ms animation + 880ms max delay)
+      }, BG_ANIMATION_DELAY);
 
       // header show/hide on scroll
       let lastScroll = window.pageYOffset, ticking=false;
