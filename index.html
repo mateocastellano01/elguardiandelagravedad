@@ -412,11 +412,12 @@
         document.querySelectorAll('.letter').forEach(span => span.setAttribute('data-animate','true'));
       }
 
-      // Wait for background animation to complete (2.8s) before running wind sequence
+      // Wait for background animation to complete before running wind sequence
+      const BACKGROUND_ANIMATION_DURATION = 2800; // matches CSS animation duration
       if(document.readyState === 'complete' || document.readyState === 'interactive') {
-        setTimeout(runWindSequence, 2800);
+        setTimeout(runWindSequence, BACKGROUND_ANIMATION_DURATION);
       } else {
-        window.addEventListener('DOMContentLoaded', () => setTimeout(runWindSequence, 2800));
+        window.addEventListener('DOMContentLoaded', () => setTimeout(runWindSequence, BACKGROUND_ANIMATION_DURATION));
       }
 
       // header show/hide on scroll
