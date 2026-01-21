@@ -174,9 +174,17 @@
       will-change:transform,opacity,filter;
     }
 
-    /* Apply epic background animation to guardian image instead of body::before when needed */
+    /* New epic animation for the guardian image (distinct from body epicBg) */
+    @keyframes epicImg {
+      0%   { transform:translateY(6vh) scale(.96) rotate(0deg); opacity:0.06; filter:brightness(.9) saturate(.9); }
+      25%  { transform:translateY(-2vh) scale(1.06) rotate(-0.3deg); opacity:0.28; filter:brightness(1.08) saturate(1.04); }
+      60%  { transform:translateY(-5vh) scale(1.12) rotate(-0.8deg); opacity:0.42; filter:brightness(1.14) saturate(1.12); }
+      100% { transform:translateY(0) scale(1) rotate(0deg); opacity:0.18; filter:brightness(1) saturate(.98); }
+    }
+
+    /* Apply epic image animation when .img-epic is present */
     .guardian-img.img-epic{
-      animation-name:epicBg;
+      animation-name:epicImg;
       animation-duration:6400ms;
       animation-timing-function:cubic-bezier(.22,.9,.29,1);
       animation-fill-mode:forwards;
@@ -229,11 +237,12 @@
             <div class="time-label">Segundos</div>
           </div>
 
-          <!-- guardian image placed under title and counter -->
-          <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true">
-
         </div>
     </div>
+
+    <img src="Ilustración El Guardian WEB.png" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true">
+
+  </header>
   </header>
 
   <main id="main-content" role="main">
@@ -433,14 +442,6 @@
       }
       updateCounter();
       const interval = setInterval(updateCounter,1000);
-
-      // EPIC BACKGROUND: trigger after existing animations finish
-      const body = document.body;
-      // Helper to start epic bg once (after wind/letters finish)
-      function startEpicBg(){
-        if(body.classList.contains('bg-epic')) return;
-        body.classList.add('bg-epic');
-      }
 
       // Determine when initial wind/letter animations complete.
       // Letters: last letter delay = (count-1)*90ms + duration 1200ms
