@@ -54,7 +54,7 @@
 
     /* HERO */
     header{min-height:100vh;padding-top:70px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#0f1e2e,#06090f);position:relative;overflow:hidden}
-    .guardian-img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:85vw;max-width:900px;opacity:.18;z-index:1;pointer-events:none}
+    .guardian-img{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:85vw;max-width:900px;opacity:.18;z-index:1;pointer-events:none;transform-origin:center center}
     .hero{position:relative;z-index:2;text-align:center;max-width:980px;padding:20px}
 
     h1{font-size:3.8rem;letter-spacing:3px;margin-bottom:14px;color:#c7e6e2;line-height:1}
@@ -176,10 +176,10 @@
 
     /* New epic animation for the guardian image (distinct from body epicBg) */
     @keyframes epicImg {
-      0%   { transform:translateY(6vh) scale(.96) rotate(0deg); opacity:0.06; filter:brightness(.9) saturate(.9); }
-      25%  { transform:translateY(-2vh) scale(1.06) rotate(-0.3deg); opacity:0.28; filter:brightness(1.08) saturate(1.04); }
-      60%  { transform:translateY(-5vh) scale(1.12) rotate(-0.8deg); opacity:0.42; filter:brightness(1.14) saturate(1.12); }
-      100% { transform:translateY(0) scale(1) rotate(0deg); opacity:0.18; filter:brightness(1) saturate(.98); }
+      0%   { transform:translate(-50%,-50%) translateY(6vh) scale(.96) rotate(0deg); opacity:0.06; filter:brightness(.9) saturate(.9); }
+      25%  { transform:translate(-50%,-50%) translateY(-2vh) scale(1.06) rotate(-0.3deg); opacity:0.28; filter:brightness(1.08) saturate(1.04); }
+      60%  { transform:translate(-50%,-50%) translateY(-5vh) scale(1.12) rotate(-0.8deg); opacity:0.42; filter:brightness(1.14) saturate(1.12); }
+      100% { transform:translate(-50%,-50%) translateY(0) scale(1) rotate(0deg); opacity:0.18; filter:brightness(1) saturate(.98); }
     }
 
     /* Apply epic image animation when .img-epic is present */
