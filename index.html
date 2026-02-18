@@ -228,6 +228,48 @@
     .mute-btn:hover{transform:translateY(-2px) scale(1.05)}
     .mute-btn:active{transform:translateY(1px)}
     .mute-btn.muted{opacity:0.5}
+    /* --- Character grid + modal styles --- */
+    .characters-section{padding:28px 14px 44px}
+    .characters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:980px;margin:22px auto 6px}
+    .char-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(143,174,199,0.06);padding:8px;border-radius:12px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform 220ms cubic-bezier(.22,.9,.29,1),box-shadow 220ms;overflow:hidden}
+    .char-card:focus,.char-card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(6,36,34,0.22)}
+    .thumb-wrap{position:relative;border-radius:8px;overflow:hidden}
+      .char-thumb{width:100%;height:360px;object-fit:cover;object-position:top center;background:#071015;transition:transform 320ms cubic-bezier(.22,.9,.29,1);display:block;transform-origin:top center;transform:scale(1.25) translateY(-8%);}
+      .char-card:hover .char-thumb,.char-card:focus .char-thumb{transform:scale(1.42) translateY(-12%);}
+      /* Shift top further for specific thumb (e.g. BOB.webp / mariner) */
+        .char-thumb.shift-top{transform:scale(1.28) translateY(-6%);} /* lowered further */
+        .char-card:hover .char-thumb.shift-top,.char-card:focus .char-thumb.shift-top{transform:scale(1.44) translateY(-10%);} /* hover adjusted */
+    .char-overlay{position:absolute;left:10px;top:10px;padding:6px 10px;border-radius:8px;background:linear-gradient(90deg,rgba(0,0,0,0.55),rgba(6,10,14,0.45));color:#e6f6f5;font-weight:700;letter-spacing:0.6px;opacity:0;transform:translateY(-6px);transition:opacity 260ms,transform 260ms}
+    .char-card:hover .char-overlay,.char-card:focus .char-overlay{opacity:1;transform:none}
+    .char-meta{display:flex;justify-content:center;align-items:center;text-align:center}
+    .char-name{font-weight:700;color:#e6f6f5;display:block;width:100%;text-align:center}
+    .char-role{font-size:.9rem;color:#9fbfc6;display:block;width:100%;text-align:center}
+
+    /* Modal */
+    .char-modal{position:fixed;inset:0;background:rgba(2,6,10,0.7);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity 320ms cubic-bezier(.22,.9,.29,1),visibility 320ms;z-index:1200}
+    .char-modal.open{opacity:1;visibility:visible}
+    /* Center modal-inner in the viewport regardless of internal column heights */
+    .char-modal .modal-inner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.98);background:linear-gradient(180deg,rgba(6,10,14,0.9),rgba(6,10,14,0.98));border-radius:14px;max-width:980px;width:calc(100% - 40px);max-height:92vh;overflow:auto;border:1px solid rgba(110,168,161,0.06);box-shadow:0 30px 80px rgba(2,6,10,0.6);opacity:0;transition:transform 420ms cubic-bezier(.22,.9,.29,1),opacity 420ms;z-index:1210}
+    .char-modal.open .modal-inner{transform:translate(-50%,-50%) scale(1);opacity:1}
+    .modal-grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    .modal-image{width:100%;height:100%;max-height:70vh;object-fit:contain;border-radius:10px;background:#071015}
+    .modal-image-wrap{overflow:auto;max-height:70vh}
+    .modal-image{transition:transform 260ms cubic-bezier(.22,.9,.29,1);transform-origin:top center}
+    .modal-image.zoom-level-1{transform:scale(1.6);cursor:zoom-out}
+    .modal-image.zoom-level-2{transform:scale(2.4);cursor:zoom-out}
+    .modal-side{padding:18px;display:flex;flex-direction:column;gap:12px}
+    .modal-side h3{margin:0;color:#e6f6f5}
+    .modal-side .meta{color:#9fbfc6;font-size:.95rem}
+    .modal-side p{color:#cfe9e6;line-height:1.6}
+    .modal-actions{display:flex;gap:8px;margin-top:8px}
+    .modal-close{margin-left:auto;padding:8px 12px;border-radius:10px;border:1px solid rgba(143,174,199,0.06);background:transparent;color:#e6f6f5;cursor:pointer}
+    .modal-nav-btn{padding:8px 12px;border-radius:10px;border:none;background:#0f3f3b;color:#eaf7f4;cursor:pointer}
+
+    @media (max-width:820px){
+      .modal-grid{grid-template-columns:1fr;}
+      .modal-side{max-height:40vh;overflow:auto}
+      .char-thumb{height:180px}
+    }
   </style>
 </head>
 <body>
@@ -314,6 +356,43 @@
           <div style="max-width:760px;margin:0 auto;color:#d7e4e2;line-height:1.8;">
             <p><em>El Guardián de la Gravedad</em> es una historieta de ciencia ficción y fantasía situada en una Argentina distópica. La obra se construye como un viaje físico y emocional a través de territorios colapsados, donde el paisaje, la memoria y el cuerpo se vuelven inseparables.</p>
           </div>
+
+          <!-- Characters grid -->
+          <div class="characters-section" aria-labelledby="personajes-title">
+            <h3 id="personajes-title" style="color:#c7e6e2;margin-top:18px">Personajes</h3>
+            <p style="color:#9fbfc6;max-width:760px;margin-top:6px">Haz clic en una ficha para ver la imagen y la ficha completa del personaje.</p>
+
+            <div id="characters-grid" class="characters-grid" role="list" aria-live="polite">
+              <!-- JS render: character cards -->
+            </div>
+          </div>
+
+          <!-- Character modal (single shared overlay) -->
+          <div id="char-modal" class="char-modal" role="dialog" aria-modal="true" aria-hidden="true">
+            <div class="modal-inner" role="document">
+              <div style="display:flex;align-items:flex-start;justify-content:flex-end;padding:12px 18px 0 18px">
+                <div class="modal-actions" aria-hidden="true">
+                  <button class="modal-nav-btn" id="zoom-char" title="Zoom">🔍</button>
+                  <button class="modal-nav-btn" id="prev-char" title="Anterior">◀</button>
+                  <button class="modal-nav-btn" id="next-char" title="Siguiente">▶</button>
+                </div>
+                <button class="modal-close" id="close-char" aria-label="Cerrar">Cerrar ✕</button>
+              </div>
+              <div class="modal-grid" style="padding:8px 18px 20px 18px">
+                <div class="modal-image-wrap">
+                  <img id="modal-image" class="modal-image" src="" alt="">
+                </div>
+                <aside class="modal-side">
+                  <h3 id="modal-name">Nombre personaje</h3>
+                  <div class="meta" id="modal-role">Rol / Alias</div>
+                  <p id="modal-short">Descripción breve del personaje.</p>
+                  <p id="modal-bio">Biografía ampliada. Aquí aparecerá el texto con más detalle sobre el personaje, su historia, motivaciones y relación con el proyecto.</p>
+                  <div id="modal-data" style="color:#9fbfc6;font-size:.95rem"></div>
+                </aside>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -422,6 +501,14 @@
         entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('is-visible'); observer.unobserve(en.target); }});
       }, {threshold:0.12});
       reveals.forEach(r => io.observe(r));
+      // Fallback: if for any reason IntersectionObserver didn't run or elements weren't observed,
+      // ensure reveals become visible shortly after load so content is readable.
+      setTimeout(()=>{
+        const pending = document.querySelectorAll('.reveal:not(.is-visible)');
+        if(pending.length){
+          pending.forEach(el => el.classList.add('is-visible'));
+        }
+      }, 700);
 
       // Split title/subtitle into letters for animation
       function splitLetters(selector){
@@ -572,6 +659,89 @@
         window.scrollTo({top:0,behavior:'smooth'});
       });
 
+    })();
+  </script>
+
+  <script>
+    (function(){
+      const characters = [
+        { id:'guardian', name:'Hima', role:'El actual Guardián de la Gravedad', short:'Niño nacido de la Luna, destinado a ser el nuevo Guardián de la Gravedad.', bio:'Nacido con el deber de portar una gran responsabilidad, Hima, es el contendiente a regular la gravedad del planeta entero, cuidado por la F.E.M.S., mientras descubre su pasado, construye su futuro e identifica su presente.', thumb:'HIMA.webp', image:'HIMA.webp', alt:'Retrato de Hima', data:`<ul style="padding-left:18px;margin:8px 0;color:#9fbfc6"><li><strong>Edad:</strong> 10 años</li><li><strong>Nacionalidad:</strong> Argentino</li><li><strong>Raza:</strong> Humano</li><li><strong>Altura:</strong> 1,40 m</li><li><strong>Comida favorita:</strong> Milanesa con puré</li><li><strong>Habilidades:</strong> Control Gravitacional</li><li><strong>Afilación:</strong> F.E.M.S.</li></ul>` },
+        { id:'lurin', name:'Lurin', role:'Portadora de la 5ta Voz Solar', short:'Niña nacida del Sol, destinada a continuar el legado de las portadoras de la Voz Solar.', bio:'Nacida 5 minutos después de su hermano, Lurin nació del sol con un inmenso poder y continuando un legado que no se ve seguido, Las Portadoras de la Voz Solar. Criada junto a su hermano por la F.E.M.S., Lurin buscará descubrir su pasado y encontrar el límite de sus capacidades.', thumb:'LURIN.webp', image:'LURIN.webp', alt:'Lurin con brújula y mapa húmedo', data:`<ul style="padding-left:18px;margin:8px 0;color:#9fbfc6"><li><strong>Edad:</strong> 10 años</li><li><strong>Nacionalidad:</strong> Argentina</li><li><strong>Raza:</strong> Humana</li><li><strong>Altura:</strong> 1,30 m</li><li><strong>Comida favorita:</strong> Helado</li><li><strong>Afilación:</strong> F.E.M.S.</li><li><strong>Habilidades:</strong> Control de la energía y leve control de la materia</li></ul>` },
+        { id:'bob', name:'BoB', role:'Líder del escuadrón especial F.E.M.S.', short:'Caputiano enviado a la Tierra como embajador espacial.', bio:'BoB, el actual Líder del Escuadrón Especial de la F.E.M.S. en Argentina, es un Caputiano enviado con el fin de crear lazos entre ambas razas. Posteriormente se uniría en la creación de la F.E.M.S. y nadie sabe realmente cuánto tiempo lleva en la Tierra. Amistoso y buen líder, ama el café.', thumb:'BOB.webp', image:'BOB.webp', alt:'Retrato de BoB con gorra y cicatrices', data:`<ul style="padding-left:18px;margin:8px 0;color:#9fbfc6"><li><strong>Edad:</strong> ???</li><li><strong>Nacionalidad:</strong> Argentino</li><li><strong>Raza:</strong> Caputiano</li><li><strong>Altura:</strong> 1,90 m</li><li><strong>Comida favorita:</strong> El Café</li><li><strong>Afilación:</strong> F.E.M.S.</li><li><strong>Habilidades:</strong> Habilidades telequinéticas, control de la materia y poseedor de un Orbe Negro</li></ul>` },
+        { id:'slot1', name:'Próximo', role:'Próximamente', short:'Ficha pendiente. Imagen e información por cargar.', bio:'', thumb:"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect fill='rgb(9,16,24)' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='rgb(127,184,176)' font-size='28' font-family='Arial, sans-serif'>Próxima imagen</text></svg>", image:"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'><rect fill='rgb(9,16,24)' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='rgb(127,184,176)' font-size='36' font-family='Arial, sans-serif'>Imagen pendiente</text></svg>", alt:'Imagen pendiente', data:'<div style="color:#9fbfc6">Información pendiente</div>' },
+        { id:'slot2', name:'Próximo', role:'Próximamente', short:'Ficha pendiente. Imagen e información por cargar.', bio:'', thumb:"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect fill='rgb(9,16,24)' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='rgb(127,184,176)' font-size='28' font-family='Arial, sans-serif'>Próxima imagen</text></svg>", image:"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'><rect fill='rgb(9,16,24)' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='rgb(127,184,176)' font-size='36' font-family='Arial, sans-serif'>Imagen pendiente</text></svg>", alt:'Imagen pendiente', data:'<div style="color:#9fbfc6">Información pendiente</div>' },
+        { id:'slot3', name:'Próximo', role:'Próximamente', short:'Ficha pendiente. Imagen e información por cargar.', bio:'', thumb:"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect fill='rgb(9,16,24)' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='rgb(127,184,176)' font-size='28' font-family='Arial, sans-serif'>Próxima imagen</text></svg>", image:"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='900'><rect fill='rgb(9,16,24)' width='100%' height='100%'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='rgb(127,184,176)' font-size='36' font-family='Arial, sans-serif'>Imagen pendiente</text></svg>", alt:'Imagen pendiente', data:'<div style="color:#9fbfc6">Información pendiente</div>' }
+      ];
+
+      const grid = document.getElementById('characters-grid');
+      const modal = document.getElementById('char-modal');
+      const modalImage = document.getElementById('modal-image');
+      const modalName = document.getElementById('modal-name');
+      const modalRole = document.getElementById('modal-role');
+      const modalShort = document.getElementById('modal-short');
+      const modalBio = document.getElementById('modal-bio');
+      const modalData = document.getElementById('modal-data');
+      const closeBtn = document.getElementById('close-char');
+      const prevBtn = document.getElementById('prev-char');
+      const nextBtn = document.getElementById('next-char');
+      const zoomBtn = document.getElementById('zoom-char');
+
+      let currentIndex = 0;
+      let prevFocused = null;
+
+      function renderGrid(){
+        if(!grid) return;
+        grid.innerHTML = '';
+        characters.forEach((c, idx) => {
+          const btn = document.createElement('button');
+          btn.type='button'; btn.className='char-card'; btn.setAttribute('data-index', idx);
+          const wrap = document.createElement('div'); wrap.className='thumb-wrap';
+          const img = document.createElement('img'); img.className = 'char-thumb' + (c.id==='bob' ? ' shift-top' : ''); img.src = c.thumb; img.alt = c.alt || c.name; img.loading='lazy'; img.decoding='async';
+          wrap.appendChild(img);
+          const overlay = document.createElement('div'); overlay.className='char-overlay'; overlay.textContent = c.name; wrap.appendChild(overlay);
+          btn.appendChild(wrap);
+          const meta = document.createElement('div'); meta.className='char-meta'; const inner = document.createElement('div'); const n = document.createElement('div'); n.className='char-name'; n.textContent = c.name; const r = document.createElement('div'); r.className='char-role'; r.textContent = c.role; inner.appendChild(n); inner.appendChild(r); meta.appendChild(inner); btn.appendChild(meta);
+          btn.addEventListener('click', ()=> openModal(idx));
+          grid.appendChild(btn);
+        });
+      }
+
+      function openModal(i){
+        currentIndex = i; const c = characters[i]; if(!c) return;
+        prevFocused = document.activeElement;
+        modalImage.src = c.image; modalImage.alt = c.alt || c.name; modalName.textContent = c.name; modalRole.textContent = c.role; modalShort.textContent = c.short; modalBio.textContent = c.bio; modalData.innerHTML = c.data || '';
+        modal.setAttribute('aria-hidden','false'); modal.classList.add('open');
+        try{ closeBtn.focus({preventScroll:true}); }catch(e){ closeBtn.focus(); }
+      }
+
+      function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); modalImage.src=''; if(prevFocused && prevFocused.focus) prevFocused.focus(); }
+
+      function showNext(dir){ const next = (currentIndex + dir + characters.length) % characters.length; openModal(next); }
+
+      function toggleZoom(){ if(!modalImage) return; if(modalImage.classList.contains('zoom-level-2')){ modalImage.classList.remove('zoom-level-2'); modalImage.classList.remove('zoom-level-1'); zoomBtn.textContent='🔍'; } else if(modalImage.classList.contains('zoom-level-1')){ modalImage.classList.remove('zoom-level-1'); modalImage.classList.add('zoom-level-2'); zoomBtn.textContent='🔎'; } else { modalImage.classList.add('zoom-level-1'); zoomBtn.textContent='🔎'; } const wrap = modalImage.parentElement; if(wrap) wrap.style.overflow = (modalImage.classList.contains('zoom-level-1')||modalImage.classList.contains('zoom-level-2')) ? 'auto' : 'hidden'; }
+
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+      closeBtn.addEventListener('click', closeModal);
+      prevBtn.addEventListener('click', ()=> showNext(-1));
+      nextBtn.addEventListener('click', ()=> showNext(1));
+      zoomBtn.addEventListener('click', toggleZoom);
+      modalImage.addEventListener('dblclick', toggleZoom);
+      document.addEventListener('keydown', (e)=>{
+        if(modal.classList.contains('open')){
+          if(e.key==='Escape') closeModal();
+          if(e.key==='ArrowRight') showNext(1);
+          if(e.key==='ArrowLeft') showNext(-1);
+          if(e.key==='Tab'){
+            const focusables = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const foc = Array.prototype.slice.call(focusables).filter(el => !el.hasAttribute('disabled'));
+            if(foc.length===0){ e.preventDefault(); return; }
+            const first=foc[0], last=foc[foc.length-1]; if(e.shiftKey){ if(document.activeElement===first){ last.focus(); e.preventDefault(); } } else { if(document.activeElement===last){ first.focus(); e.preventDefault(); } }
+          }
+        }
+      });
+
+      renderGrid();
+      window.ElGuardian = window.ElGuardian || {}; window.ElGuardian.addCharacter = function(obj){ characters.push(obj); renderGrid(); };
     })();
   </script>
 </body>
