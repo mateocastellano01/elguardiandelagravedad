@@ -171,7 +171,8 @@
     @media (min-width:1200px){ .bitacora-list video,.bitacora-list img{height:320px} }
 
     @media (max-width:768px){
-      h1{font-size:2.3rem}
+      /* Reduce size and letter-spacing on small screens to avoid awkward mid-word breaks in WebViews */
+      h1{font-size:2.05rem;letter-spacing:1.2px;line-height:1.08;word-break:normal;overflow-wrap:normal;hyphens:none}
       .guardian-img{width:560px;top:42%}
       .tagline{font-size:.95rem}
       .tagline-line{display:block;margin-bottom:8px}
@@ -182,11 +183,11 @@
       .panel{padding:18px}
       .acciones{flex-direction:column}
       /* Mobile hero spacing fix: avoid title/subtitle overlapping or sitting too close to the counter */
-      h1{margin-bottom:10px; line-height:1.02}
+      h1{margin-bottom:10px}
       .tagline{margin-bottom:10px}
       .count-wrap{margin-top:10px}
       /* Fallback: slightly reduce main title by ~1px to prevent wrapping issues on very narrow screens */
-      h1{font-size:calc(2.3rem - 0.0625rem)}
+      h1{font-size:calc(2.05rem - 0.0625rem)}
     }
 
     /* EPIC BACKGROUND ANIMATION (applies to body::before when activated) */
