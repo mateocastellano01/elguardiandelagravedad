@@ -815,6 +815,34 @@
       splitLetters('#main-title');
       splitLetters('#main-sub');
 
+      // After splitting letters, wrap the specific word in the title so we can force a break later.
+      function wrapLettersWord(selector, word, className){
+        try{
+          const el = document.querySelector(selector);
+          if(!el) return;
+          const letters = Array.from(el.querySelectorAll('.letter'));
+          if(letters.length === 0) return;
+          const target = word.split('');
+          const L = letters.length, W = target.length;
+          for(let i=0;i<=L-W;i++){
+            let ok = true;
+            for(let j=0;j<W;j++){
+              const ch = letters[i+j].textContent || '';
+              if(ch !== target[j]){ ok = false; break; }
+            }
+            if(ok){
+              const wrapper = document.createElement('span'); wrapper.className = className;
+              // Move matching nodes into wrapper
+              for(let k=0;k<W;k++){ wrapper.appendChild(letters[i]); letters.splice(i,1); }
+              // Insert wrapper at position i (before the letter that now occupies position i, or at end)
+              if(letters[i]) el.insertBefore(wrapper, letters[i]); else el.appendChild(wrapper);
+              break;
+            }
+          }
+        }catch(e){ /* ignore */ }
+      }
+      wrapLettersWord('#main-title','GRAVEDAD','break-gravedad');
+
       // run wind sequence: animate nav links (stagger), hero blocks and trigger letter animations
       function runWindSequence(){
         if(windStarted) return;
