@@ -59,7 +59,8 @@
     .top-nav a:focus,.top-nav a:hover{color:#e3f4ff}
 
     /* HERO */
-    header{min-height:100vh;padding-top:70px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#0f1e2e,#06090f);position:relative;overflow:hidden}
+    /* Use a JS-driven CSS variable for viewport height to avoid mobile/in-app 100vh issues (Instagram WebView, Safari/Chrome UI bars) */
+    header{min-height:calc(var(--vh, 1vh) * 100);padding-top:70px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#0f1e2e,#06090f);position:relative;overflow:hidden}
     .guardian-img{position:absolute;top:56%;left:50%;transform:translate(-50%,-50%);width:85vw;max-width:900px;opacity:.18;z-index:1;pointer-events:none}
     .hero{position:relative;z-index:2;text-align:center;max-width:980px;padding:20px}
 
@@ -1202,5 +1203,21 @@
       window.ElGuardian = window.ElGuardian || {}; window.ElGuardian.addCharacter = function(obj){ characters.push(obj); renderGrid(); };
     })();
   </script>
+    <!-- Fix mobile 100vh problems (WebViews like Instagram): set --vh to window.innerHeight * 0.01 -->
+    <script>
+      (function(){
+        function setVh(){
+          try{
+            document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+          }catch(e){ /* ignore */ }
+        }
+        // Run once and on visual-size changes
+        setVh();
+        window.addEventListener('resize', setVh, {passive:true});
+        window.addEventListener('orientationchange', setVh, {passive:true});
+        // Some WebViews change layout after a short delay; run again
+        setTimeout(setVh, 600);
+      })();
+    </script>
 </body>
 </html>
