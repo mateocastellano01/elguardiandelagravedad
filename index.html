@@ -179,6 +179,12 @@
       .top-nav ul{gap:12px;padding:12px 8px}
       .panel{padding:18px}
       .acciones{flex-direction:column}
+      /* Mobile hero spacing fix: avoid title/subtitle overlapping or sitting too close to the counter */
+      h1{margin-bottom:10px; line-height:1.02}
+      .tagline{margin-bottom:10px}
+      .count-wrap{margin-top:10px}
+      /* Fallback: slightly reduce main title by ~1px to prevent wrapping issues on very narrow screens */
+      h1{font-size:calc(2.3rem - 0.0625rem)}
     }
 
     /* EPIC BACKGROUND ANIMATION (applies to body::before when activated) */
