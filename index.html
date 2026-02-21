@@ -102,6 +102,9 @@
       animation-timing-function:cubic-bezier(.22,.9,.29,1);
     }
 
+    /* allow forcing a break for the final word in the hero title when needed */
+    .break-gravedad{display:inline}
+
     /* COUNTDOWN */
     .count-wrap{display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:8px}
     .count-label{font-size:1.05rem;color:#8fbfb7;letter-spacing:1px;text-transform:uppercase}
@@ -177,6 +180,8 @@
       .tagline{font-size:.95rem}
       /* When opened inside Instagram's in-app browser, increase subtitle by 2px total */
       html.is-instagram .tagline{font-size:calc(.95rem + 2px) !important}
+      /* For Instagram only: force "GRAVEDAD" to a new line */
+      html.is-instagram .break-gravedad{display:block;margin-top:6px}
       /* Increase main title by 1px only in Instagram WebView */
       html.is-instagram h1{font-size:calc(2.6rem + 1px) !important}
       .tagline-line{display:block;margin-bottom:8px}
@@ -341,7 +346,7 @@
     <img src="Ilustración El Guardian WEB.webp" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true" decoding="async" fetchpriority="high" loading="eager" srcset="Ilustración El Guardian WEB.webp 1x" sizes="85vw">
 
     <div class="hero" role="banner">
-      <h1 id="main-title">EL GUARDIÁN DE LA GRAVEDAD</h1>
+      <h1 id="main-title">EL GUARDIÁN DE LA <span class="break-gravedad">GRAVEDAD</span></h1>
       <p id="main-sub" class="tagline">El peso de una RESPONSABILIDAD, frente a los ojos de un DESTINO.</p>
 
       <div class="count-wrap wind delay-4">
