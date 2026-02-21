@@ -119,6 +119,12 @@
     /* PANELS/SECTIONS */
     .panel{background:linear-gradient(180deg,rgba(6,10,14,0.56),rgba(6,10,14,0.44));border:1px solid rgba(110,168,161,0.08);padding:26px;border-radius:12px;backdrop-filter:blur(6px)}
     .panel-inner{max-width:1000px;margin:0 auto}
+    .comisiones-titulo{margin-bottom:14px}
+    .sobre-mi-titulo{margin-bottom:18px}
+    /* Sobre mí: grid layout and avatar */
+    .sobre-mi-grid{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+    .sobre-mi-avatar{width:100%;height:100%;max-height:260px;object-fit:cover;border-radius:12px;border:1px solid rgba(110,168,161,0.06);background:#071015}
+    @media (max-width:820px){.sobre-mi-grid{grid-template-columns:1fr;gap:12px}}
     section.lead{padding:120px 20px;text-align:center}
     .descripcion{max-width:700px;margin:0 auto;font-size:1.05rem;line-height:1.7;color:#cdd9d7}
 
@@ -153,6 +159,14 @@
     .bitacora-titulo{text-align:center;font-size:2rem;color:#c7e6e2;margin-bottom:20px}
     .entrada{max-width:680px;margin:0 auto 30px;border-left:1px solid rgba(143,174,199,0.14);padding-left:20px}
     .fecha{display:block;font-size:.75rem;color:#8faec7;margin-bottom:10px}
+
+    /* Scrollable, compact layout for bitácora entries */
+    .bitacora-list{max-height:64vh;overflow:auto;padding-right:8px;display:grid;gap:18px}
+    @media (min-width:900px){ .bitacora-list{grid-template-columns:1fr 1fr} }
+    .bitacora-list .entrada{max-width:none;margin:0;padding:12px;border-left:none;border-radius:10px;background:linear-gradient(180deg,rgba(6,10,14,0.36),rgba(6,10,14,0.28));}
+    .bitacora-list video,.bitacora-list img{width:100%;height:220px;object-fit:cover;border-radius:10px}
+    @media (min-width:900px){ .bitacora-list video,.bitacora-list img{height:260px} }
+    @media (min-width:1200px){ .bitacora-list video,.bitacora-list img{height:320px} }
 
     @media (max-width:768px){
       h1{font-size:2.3rem}
@@ -270,6 +284,31 @@
       .modal-side{max-height:40vh;overflow:auto}
       .char-thumb{height:180px}
     }
+
+    /* Inline modal (confined to panels) */
+    .comision-panel{position:relative}
+    .com-gallery img{transition:transform 300ms cubic-bezier(.22,.9,.29,1),box-shadow 260ms;will-change:transform;}
+    .com-gallery img:hover,.com-gallery img:focus{transform:scale(1.04);box-shadow:0 10px 30px rgba(2,6,10,0.45)}
+
+    /* Micro animation: thumbnails enter with a subtle stagger */
+    .com-gallery img{opacity:0;transform:translateY(10px) scale(.995)}
+    .com-gallery.show img{opacity:1;transform:none}
+
+    .inline-modal-overlay{position:absolute;inset:0;background:rgba(2,6,10,0.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:1200;opacity:0;transform:translateY(6px);transition:opacity 320ms cubic-bezier(.22,.9,.29,1),transform 320ms}
+    .inline-modal-overlay.open{opacity:1;transform:none}
+    .inline-modal-inner{background:linear-gradient(180deg,rgba(6,10,14,0.95),rgba(6,10,14,0.98));border-radius:12px;max-width:840px;width:calc(100% - 36px);padding:12px;border:1px solid rgba(110,168,161,0.06);box-shadow:0 20px 60px rgba(2,6,10,0.6);display:flex;gap:12px;align-items:flex-start;opacity:0;transform:translateY(12px) scale(.98);transition:opacity 360ms cubic-bezier(.22,.9,.29,1),transform 360ms}
+    .inline-modal-overlay.open .inline-modal-inner{opacity:1;transform:none}
+    .inline-modal-image{max-height:60vh;width:100%;object-fit:contain;border-radius:8px;background:#071015}
+    .inline-modal-close{position:absolute;top:10px;right:12px;padding:6px 10px;border-radius:8px;border:1px solid rgba(143,174,199,0.06);background:transparent;color:#e6f6f5;cursor:pointer;z-index:1220}
+
+    /* Fullscreen viewer */
+    .fullscreen-overlay{position:fixed;inset:0;background:rgba(2,6,10,0.92);display:flex;align-items:center;justify-content:center;z-index:1300;opacity:0;transition:opacity 320ms cubic-bezier(.22,.9,.29,1)}
+    .fullscreen-overlay.open{opacity:1}
+    .fullscreen-inner{position:relative;max-width:96vw;max-height:96vh}
+    .fullscreen-image{max-width:96vw;max-height:96vh;object-fit:contain;border-radius:8px;cursor:zoom-in;transition:transform 320ms cubic-bezier(.22,.9,.29,1),opacity 260ms;opacity:0;transform:scale(.98)}
+    .fullscreen-overlay.open .fullscreen-image{opacity:1;transform:none}
+    .fullscreen-image.zoomed{transform:scale(1.6);cursor:zoom-out}
+    .fullscreen-close{position:absolute;top:-8px;right:-8px;padding:8px 12px;border-radius:10px;border:1px solid rgba(143,174,199,0.06);background:transparent;color:#e6f6f5;cursor:pointer;z-index:1310}
   </style>
 </head>
 <body>
@@ -334,17 +373,147 @@
         <div class="panel-inner">
           <h2 id="bitacora-title" class="bitacora-titulo">Bitácora / Noticias</h2>
 
+          <!-- Entradas automáticas desde la carpeta BITÁCORA (ordenadas más recientes primero) -->
+          <p class="bitacora-intro" style="max-width:760px;margin:8px auto 18px;color:#cfe8e5;line-height:1.6;text-align:center;">Acá les dejo avances y un poco de lo rescatado del proceso general de la creación de "El Guardián de la Gravedad", lo estaré actualizando, estén pendientes!</p>
+          <div class="bitacora-list">
           <article class="entrada">
-            <span class="fecha">12 · Marzo · 2025</span>
-            <h3>La ciudad sumergida</h3>
-            <p>Avances sobre el final del Tomo I. La llegada a una Capital Federal inundada implicó repensar el color, el silencio y el peso del paisaje como parte activa del relato.</p>
+            <span class="fecha">25 · Diciembre · 2025</span>
+            <h3>Registro — 25/12/2025</h3>
+            <img src="BITÁCORA/25-12-25.webp" alt="25-12-25" loading="lazy">
+            <p>Felices Fiestas! Fue un hermoso año, empiecen el 2026 con todo, yo sigo trabajando en terminar el proyecto! Ya no queda nada, nos vemos dentro de poco ;)</p>
+          </article>
+          <article class="entrada">
+            <span class="fecha">12 · Diciembre · 2025</span>
+            <h3>Registro — 12/12/2025</h3>
+            <video controls src="BITÁCORA/12-12-25.mp4" loading="lazy"></video>
+            <p>Acá una imagen del montaje previo a ser definitivo. A día de hoy hay algunos pequeños cambios que quiero realizarle para próximamente presentarlo para el cierre definitivo.</p>
+          </article>
+          <article class="entrada">
+            <span class="fecha">25 · Noviembre · 2025</span>
+            <h3>Registro — 25/11/2025</h3>
+            <video controls src="BITÁCORA/25-11-25.mp4" loading="lazy"></video>
+            <p>Fue el último día de cursada, mi último día en la facultad y encaminado a preparar y presentar la tesis. Fue un día muy especial y hermosa forma de cerrar el año universitario.</p>
           </article>
 
           <article class="entrada">
-            <span class="fecha">28 · Febrero · 2025</span>
-            <h3>Decisiones de atmósfera y color</h3>
-            <p>La paleta fría y desaturada aparece como una forma de narrar el agotamiento, pero también la persistencia. El espacio y el agua comienzan a dialogar visualmente.</p>
+            <span class="fecha">28 · Octubre · 2025</span>
+            <h3>Registro — 28/10/2025</h3>
+            <img src="BITÁCORA/28-10-25.jpg" alt="28-10-25" loading="lazy">
+            <p>Tuve la suerte de dar una charla informativa de "La Historieta y el Lenguaje Visual de las Imágenes" en la Escuela Modelo Sarmiento, donde estuve toda mi niñez y donde me decidí ser artista; fue todo un orgullo y un primer logro para mí.</p>
           </article>
+
+          <article class="entrada">
+            <span class="fecha">05 · Octubre · 2025</span>
+            <h3>Registro — 05/10/2025</h3>
+            <video controls src="BITÁCORA/5-10-25.mp4" loading="lazy"></video>
+            <p>Por fin! Terminé todas las páginas que integran a "El Guardián de la Gravedad" Tomo n°1, siendo un total de 104 páginas. Cada vez más cerquita de terminar.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">19 · Septiembre · 2025</span>
+            <h3>Registro — 19/09/2025</h3>
+            <video controls src="BITÁCORA/19-9-25.mp4" loading="lazy"></video>
+            <p>Ya para estas fechas estaba cursando Nivel III de Proyectual y el último año de mi carrera universitaria. En el video se puede ver como estoy avanzando con el capítulo 2 y último del Tomo N°1.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">09 · Septiembre · 2025</span>
+            <h3>Registro — 09/09/2025</h3>
+            <video controls src="BITÁCORA/9-9-25.mp4" loading="lazy"></video>
+            <p>Aquí realicé el primer montaje con una impresión mucho más avanzada de la historieta, con prólogo y capítulo 1 ya incluídos y una instalación de la obra que acompaña a la ambientación de su presentación.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">10 · Junio · 2025</span>
+            <h3>Registro — 10/06/2025</h3>
+            <video controls src="BITÁCORA/10-6-25.mp4" loading="lazy"></video>
+            <p>Ya habiendo pasado bastante tiempo, para estas fechas estaba realizando la línea definitiva del capítulo 1. Por suerte me pude acomodar mucho mejor al programa digital que utilizo.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">24 · Octubre · 2024</span>
+            <h3>Registro — 24/10/2024</h3>
+            <video controls src="BITÁCORA/24-10-24.mp4" loading="lazy"></video>
+            <p>Revisité las páginas iniciales del capítulo 1 para hacer unas leves correcciones de ideas y dibujo.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">04 · Octubre · 2024</span>
+            <h3>Registro — 04/10/2024</h3>
+            <video controls src="BITÁCORA/4-10-24.mp4" loading="lazy"></video>
+            <p>Ya para estas fechas estaba realizando los bocetos del "Capítulo 1", cursando nivel II de Proyectual, un año decisivo para mí, que terminó de definir lo que es TODO el proyecto.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">11 · Septiembre · 2024</span>
+            <h3>Registro — 11/09/2024</h3>
+            <video controls src="BITÁCORA/11-9-24.mp4" loading="lazy"></video>
+            <p>A éste personaje le tengo mucho cariño; lo creé con ideas de Constanza Martínez Rolón, que supervisaba lo que iba haciendo. Le gustaba mucho el personaje. Es una persona que amo, admiro mucho y una increíble artista. Es muy especial para mí.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">12 · Junio · 2024</span>
+            <h3>Registro — 12/06/2024</h3>
+            <video controls src="BITÁCORA/12-6-24.mp4" loading="lazy"></video>
+            <p>Primer aparición de personajes secundarios próximos a aparecer en lo que sería el "Capítulo 2"; acá realizo una prueba de color y luz.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">17 · Febrero · 2024</span>
+            <h3>Registro — 17/02/2024</h3>
+            <video controls src="BITÁCORA/17-2-24.mp4" loading="lazy"></video>
+            <p>A pocos días de la primer entrega final de Proyectual, pude tener mi primer versión impresa de la historieta. Al principio el proyecto tenía un enfoque en "diferentes estilos visuales" según qué pasaba en la historia, pero eso terminó siendo completamente descartado.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">30 · Enero · 2024</span>
+            <h3>Registro — 30/01/2024</h3>
+            <video controls src="BITÁCORA/30-1-24.mp4" loading="lazy"></video>
+            <p>Ya entrando en 2024, pasé todos los bocetos a digital y empecé a trabajar la línea con Clip Studio Paint; mi idea era definir todo en digital para poder imprimirlo posteriormente.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">29 · Septiembre · 2023</span>
+            <h3>Registro — 29/09/2023</h3>
+            <video controls src="BITÁCORA/29-9-23.mp4" loading="lazy"></video>
+            <p>Tomé como referencia una ilustración que había hecho en base a un dibujo de cuando era chico y lo agregué como personaje relevante en la historia, mientras, seguía avanzando con más páginas y bocetos.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">21 · Septiembre · 2023</span>
+            <h3>Registro — 21/09/2023</h3>
+            <video controls src="BITÁCORA/21-9-23.mp4" loading="lazy"></video>
+            <p>Avance de las páginas del Prólogo. En ese momento todavía escribía el texto en los propios bocetos.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">24 · Agosto · 2023</span>
+            <h3>Registro — 24/08/2023</h3>
+            <video controls src="BITÁCORA/24-8-23.mp4" loading="lazy"></video>
+            <p>Para la fecha del video, ya estaba cursando la segunda mitad de Taller proyectual I de Dibujo y con eso, el comienzo de los bocetos de lo que sería el "Prólogo" de "El Guardián de la Gravedad".</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">14 · Junio · 2023</span>
+            <h3>Registro — 14/06/2023</h3>
+            <video controls src="BITÁCORA/14-6-23.mp4" loading="lazy"></video>
+            <p>Primeras viñetas de prueba y experimentación, hecho en tradicional.</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">27 · Mayo · 2023</span>
+            <h3>Registro — 27/05/2023</h3>
+            <video controls src="BITÁCORA/27-5-23.mp4" loading="lazy"></video>
+            <p>Después de meses de la primer referencia, comencé Taller Proyectual de Dibujo en la facultad. Éste dibujo es del primer dibujo para definir el diseño de "Gresh".</p>
+          </article>
+
+          <article class="entrada">
+            <span class="fecha">16 · Agosto · 2022</span>
+            <h3>Registro — 16/08/2022</h3>
+            <video controls src="BITÁCORA/16-8-22.mp4" loading="lazy"></video>
+            <p>Registro Inicial, tomo este lienzo que pinté de BoB como la aparición definitiva de las primeras inquietudes e ideas sobre el proyecto, concibiendo así el primer personaje.</p>
+          </article>
+          </div>
         </div>
       </div>
     </section>
@@ -432,10 +601,56 @@
           <h2 class="comisiones-titulo">Comisiones</h2>
           <p class="comisiones-intro">Realizo trabajos por encargo vinculados a la ilustración, el dibujo narrativo y el diseño de personajes. Cada pedido se trabaja de manera personalizada, respetando tiempos, procesos y acuerdos previos.</p>
 
-          <div class="comisiones-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px;max-width:900px;margin:24px auto;">
-            <div class="comision"><h3>Ilustración</h3><p>Ilustraciones originales en técnica digital o tradicional.</p></div>
-            <div class="comision"><h3>Dibujo narrativo</h3><p>Viñetas, páginas o escenas con enfoque secuencial.</p></div>
-            <div class="comision"><h3>Personajes</h3><p>Diseño y desarrollo de personajes.</p></div>
+          <div class="comisiones-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;max-width:980px;margin:24px auto;">
+            <article class="comision-panel panel" style="padding:18px;">
+              <h3>Ilustración</h3>
+              <p>Ilustraciones originales para impresión y web, tanto en técnica digital como tradicional. Trabajo compositivo, color y acabado; entrego archivos en alta resolución y versiones optimizadas para uso digital.</p>
+              <ul style="color:#9fbfc6;margin-top:8px">
+                <li><strong>Qué incluye:</strong> bocetos, versión final a color y archivo en alta resolución.</li>
+                <li><strong>Ideal para:</strong> portadas, pósters, prints y comisiones personales.</li>
+              </ul>
+              <div class="com-gallery" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px">
+                <img src="ILUSTRACIÓN/2D Gorillaz.webp" alt="2D Gorillaz" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="ILUSTRACIÓN/5.webp" alt="Ilustración 5" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="ILUSTRACIÓN/El Guardian de la Gravedad Completo PORTADA.webp" alt="Portada El Guardián" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="ILUSTRACIÓN/Guitar Boy.webp" alt="Guitar Boy" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+              </div>
+            </article>
+
+            <article class="comision-panel panel" style="padding:18px;">
+              <h3>Dibujo narrativo</h3>
+              <p>Viñetas y páginas secuenciales con foco en la claridad narrativa y el ritmo visual. Ofrezco desarrollo desde thumbnails y storyboard hasta entintado y color final, adaptando el formato según necesidad editorial o digital.</p>
+              <ul style="color:#9fbfc6;margin-top:8px">
+                <li><strong>Qué incluye:</strong> layout, páginas entintadas y coloreadas, archivos listos para impresión o web.</li>
+                <li><strong>Ideal para:</strong> cómics, novelas gráficas, fanzines y proyectos secuenciales.</li>
+              </ul>
+              <div class="com-gallery" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px">
+                <img src="DIBUJO NARRATIVO/El Guardian de la Gravedad Completo pág 1.webp" alt="Página 1" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="DIBUJO NARRATIVO/El Guardian de la Gravedad Completo pág 51.webp" alt="Página 51" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="DIBUJO NARRATIVO/El Guardian de la Gravedad Completo pág 54.webp" alt="Página 54" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <div style="width:100%;height:120px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));color:#9fbfc6">Más muestras pronto</div>
+              </div>
+            </article>
+
+            <article class="comision-panel panel" style="padding:18px;">
+              <h3>Personajes</h3>
+              <p>Diseño y desarrollo de personajes: exploración de siluetas, paleta cromática, expresiones y poses. Entrego fichas de referencia, variantes de vestuario y recursos listos para producción o continuidad narrativa.</p>
+              <ul style="color:#9fbfc6;margin-top:8px">
+                <li><strong>Qué incluye:</strong> bocetos exploratorios, turnaround y hoja de expresiones.</li>
+                <li><strong>Ideal para:</strong> proyectos transmedia, juegos, cómics y diseño de elenco.</li>
+              </ul>
+              <div class="com-gallery" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px">
+                <img src="PERSONAJES/Baal. Personaje El Guardián de la Gravedad.webp" alt="Baal" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="PERSONAJES/G. Personaje El Guardian de la Gravedad.webp" alt="G." loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="PERSONAJES/Ginna El Guardian de la Gravedad.webp" alt="Ginna" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+                <img src="PERSONAJES/HYUGGS. El Guardián de la Gravedad.webp" alt="HYUGGS" loading="lazy" style="width:100%;height:120px;object-fit:cover;border-radius:8px;display:block">
+              </div>
+            </article>
+          </div>
+
+          <div style="max-width:760px;margin:18px auto 0;color:#d7e4e2;line-height:1.7;text-align:center;">
+            <p class="comisiones-form-intro" style="font-size:1rem;color:#cfe9e6;">¿Listo para encargar? Completa el formulario indicando tu nombre, e-mail y una descripción del pedido. Incluí referencias, tamaño deseado, uso (web/impresión), plazo aproximado y presupuesto orientativo si lo tenés; así puedo enviarte un presupuesto y tiempos estimados.</p>
+            <p style="color:#9fbfc6;font-size:.95rem;margin-top:8px">Contesto consultas dentro de 48–72 horas hábiles. Si necesitás enviar archivos pesados o referencias adicionales, indicá en el mensaje y coordinamos la mejor vía.</p>
           </div>
 
           <form class="formulario-comisiones" action="https://formspree.io/f/maqwlbqw" method="POST" aria-label="Formulario de comisiones">
@@ -453,9 +668,33 @@
       <div class="panel">
         <div class="panel-inner">
           <h2 class="sobre-mi-titulo">Sobre mí</h2>
-          <div style="max-width:720px;margin:0 auto;color:#d7e4e2;line-height:1.8;">
-            <p>Soy Mateo Castellano, artista visual y estudiante de la Licenciatura en Artes Visuales. Mi trabajo se centra en la historieta, el dibujo narrativo y la construcción de mundos como forma de reflexión sobre la memoria, el territorio y la responsabilidad individual.</p>
+
+          <div class="sobre-mi-grid" style="max-width:860px;margin:0 auto;color:#d7e4e2;line-height:1.75;">
+            <img src="SOBRE MÍ/WhatsApp Image 2026-02-21 at 11.13.47.jpeg" alt="Foto de Mateo Castellano" class="sobre-mi-avatar" loading="lazy" decoding="async">
+            <div>
+              <p>Soy Mateo Castellano, artista visual y estudiante de la Licenciatura en Artes Visuales en la UNA.</p>
+              <p>Trabajo principalmente en historieta, ilustración y diseño de personajes, combinando el dibujo narrativo con atmósferas y paletas que exploran la memoria, el territorio y la responsabilidad individual.</p>
+
+              <p>Soy Argentino, tengo 24 años, nací en Buenos Aires, Capital Federal. Crecí en el barrio de Floresta, desde chico siempre me gustó el mundo de la historieta, las películas y series compartidas en familia y los libros de fantasía/ciencia ficción que te trasladan a otro mundo. Mi objetivo y sueño como artista, es lograr la misma sensación con mis trabajos.</p>
+
+                <p style="color:#9fbfc6;margin-top:10px">Realizo comisiones personalizadas, proyectos editoriales y diseño de personajes. Si querés encargar un trabajo, usá el formulario en la sección de Comisiones o escribime directamente por e-mail.</p>
+
+              <div class="sobre-mi-skills" style="margin-top:14px">
+                <h4 style="margin:0 0 8px;color:#c7e6e2">Poseo habilidades en:</h4>
+                <ul style="color:#9fbfc6;list-style:disc;padding-left:20px;margin:0">
+                  <li>Clip Studio Paint</li>
+                  <li>Photoshop</li>
+                  <li>Illustrator</li>
+                  <li>Premiere</li>
+                  <li>After Effects</li>
+                </ul>
+              </div>
+                <div style="margin-top:12px">
+                  <p style="color:#cfe9e6;margin:0">Si necesitás revisar mi CV, podés abrirlo aquí: <a href="SOBRE MÍ/CV.pdf" target="_blank" rel="noopener noreferrer" style="color:#6ea8a1;text-decoration:underline;font-weight:700">Ver CV (PDF)</a></p>
+                </div>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -608,7 +847,7 @@
       }, {passive:true});
 
       // Countdown logic (smooth flip)
-      const lanzamiento = new Date('March 20, 2026 00:00:00').getTime();
+      const lanzamiento = new Date('April 15, 2026 00:00:00').getTime();
       const diasEl = document.getElementById('dias'), horasEl = document.getElementById('horas'), minutosEl = document.getElementById('minutos'), segundosEl = document.getElementById('segundos');
 
       function setAndFlip(el, value){
@@ -789,6 +1028,169 @@
       });
 
       renderGrid();
+      // Attach click handlers to gallery thumbnails so they open an inline modal inside their panel
+      function openInlineModal(panel, src, alt, caption){
+        if(!panel) return;
+        // Reuse existing overlay if present
+        let overlay = panel.querySelector('.inline-modal-overlay');
+        if(!overlay){
+          overlay = document.createElement('div'); overlay.className = 'inline-modal-overlay';
+          const inner = document.createElement('div'); inner.className = 'inline-modal-inner';
+          overlay.appendChild(inner);
+          const close = document.createElement('button'); close.className = 'inline-modal-close'; close.textContent = 'Cerrar ✕';
+          overlay.appendChild(close);
+          panel.appendChild(overlay);
+
+          // animate in
+          requestAnimationFrame(()=>{ overlay.classList.add('open'); inner.classList.add('open'); });
+
+          // Event listeners (animated close)
+          const removeOverlay = ()=>{ overlay.classList.remove('open'); inner.classList.remove('open'); setTimeout(()=>{ try{ if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay); }catch(e){} }, 380); };
+          close.addEventListener('click', ()=>{ removeOverlay(); try{ const focusable = panel.querySelector('img,video,button'); if(focusable) focusable.focus(); }catch(e){} });
+          overlay.addEventListener('click', (ev)=>{ if(ev.target === overlay) removeOverlay(); });
+        }
+
+        // decide media type by extension
+        const isVideo = typeof src === 'string' && src.match(/\.(mp4|webm|ogg|mov)$/i);
+        let mediaEl = overlay.querySelector('.inline-modal-media');
+        const inner = overlay.querySelector('.inline-modal-inner');
+        if(!mediaEl){
+          if(isVideo){
+            mediaEl = document.createElement('video'); mediaEl.className = 'inline-modal-media'; mediaEl.controls = true; mediaEl.preload = 'metadata';
+          } else {
+            mediaEl = document.createElement('img'); mediaEl.className = 'inline-modal-media';
+          }
+          // clicking image opens fullscreen viewer; videos DO NOT open fullscreen here
+          if(mediaEl.tagName.toLowerCase() === 'img'){
+            mediaEl.addEventListener('click', ()=>{ openFullscreen(src, alt || caption || '', false); });
+          }
+          // replace inner content
+          inner.innerHTML = ''; inner.appendChild(mediaEl);
+        }
+        if(mediaEl.tagName.toLowerCase() === 'video'){
+          mediaEl.src = src || '';
+          mediaEl.alt = alt || '';
+        } else {
+          mediaEl.src = src || '';
+          mediaEl.alt = alt || '';
+        }
+      }
+
+      document.querySelectorAll('.com-gallery img').forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', (e) => {
+          const panel = img.closest('.comision-panel');
+          openInlineModal(panel, img.src, img.alt, img.alt || 'Muestra');
+        });
+      });
+
+      // Bitácora: open inline modal for images and videos inside each entry
+      document.querySelectorAll('.bitacora-list img').forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', (e) => {
+          const panel = img.closest('.entrada');
+          openInlineModal(panel, img.src, img.alt, img.alt || 'Muestra');
+        });
+      });
+      document.querySelectorAll('.bitacora-list video').forEach(vid => {
+        vid.style.cursor = 'pointer';
+        vid.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation(); try{ vid.pause(); }catch(e){}
+          const src = vid.currentSrc || vid.getAttribute('src') || vid.src;
+          const panel = vid.closest('.entrada');
+          // Open the video directly in a new window/player
+          openVideoInWindow(src, 'Registro');
+        });
+      });
+
+      // General handler: open inline modal for any video on the page (inside its nearest panel/entrada)
+      document.querySelectorAll('video').forEach(vid => {
+        // skip videos already handled (bitacora) or inside modals
+        if(vid.closest('.inline-modal-inner') || vid.closest('.fullscreen-overlay')) return;
+        vid.style.cursor = 'pointer';
+        vid.addEventListener('click', (e)=>{
+          e.preventDefault(); e.stopPropagation(); try{ vid.pause(); }catch(e){}
+          const src = vid.currentSrc || vid.getAttribute('src') || vid.src;
+          const panel = vid.closest('.entrada') || vid.closest('.comision-panel') || vid.closest('.panel') || vid.closest('section');
+          // open directly in a new window/player
+          openVideoInWindow(src, 'Registro');
+        });
+      });
+      // Micro-animation: staggered entrance for thumbnails when gallery scrolls into view
+      (function(){
+        const galleries = document.querySelectorAll('.com-gallery');
+        if(!galleries || !('IntersectionObserver' in window)){
+          // fallback: immediately show
+          galleries.forEach(g => g.classList.add('show'));
+          return;
+        }
+        const obs = new IntersectionObserver((entries, o) => {
+          entries.forEach(en => {
+            if(!en.isIntersecting) return;
+            const g = en.target; const imgs = Array.from(g.querySelectorAll('img'));
+            imgs.forEach((img, i) => { img.style.transitionDelay = `${i * 80}ms`; });
+            g.classList.add('show');
+            o.unobserve(g);
+          });
+        }, {threshold:0.08});
+        galleries.forEach(g => obs.observe(g));
+      })();
+      // Fullscreen viewer function (global, re-usable)
+      function openFullscreen(src, alt, isVideo){
+        if(!src) return;
+        // create overlay
+        const overlay = document.createElement('div'); overlay.className = 'fullscreen-overlay';
+        const inner = document.createElement('div'); inner.className = 'fullscreen-inner';
+        const close = document.createElement('button'); close.className = 'fullscreen-close'; close.textContent = 'Cerrar ✕';
+        let media;
+        if(isVideo){
+          media = document.createElement('video'); media.className = 'fullscreen-image'; media.src = src; media.controls = true; media.autoplay = false; media.preload = 'metadata';
+          // clicking video toggles play/pause
+          media.addEventListener('click', ()=>{ if(media.paused) media.play(); else media.pause(); });
+          // add button to open the video in a separate window/tab with player controls
+          const openWinBtn = document.createElement('button'); openWinBtn.className = 'fullscreen-open-window'; openWinBtn.textContent = 'Abrir en ventana';
+          openWinBtn.addEventListener('click', ()=>{
+            const w = window.open('', '_blank', 'width=960,height=540');
+            if(!w) return;
+            const safeSrc = src.replace(/"/g, '%22');
+            const html = '<!doctype html><html><head><meta charset="utf-8"><title>Reproductor</title>'+
+              '<style>body{margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh}video{max-width:100%;max-height:100%}</style>'+
+              '</head><body><video controls src="'+safeSrc+'"></video></body></html>';
+            try{ w.document.open(); w.document.write(html); w.document.close(); w.focus(); }catch(e){ /* popup blocked or cross-origin */ }
+          });
+        } else {
+          media = document.createElement('img'); media.className = 'fullscreen-image'; media.src = src; media.alt = alt || '';
+          media.addEventListener('click', ()=>{ media.classList.toggle('zoomed'); });
+        }
+        inner.appendChild(media);
+        // if we created an open-window button add it before the close button
+        if(typeof openWinBtn !== 'undefined') inner.appendChild(openWinBtn);
+        inner.appendChild(close); overlay.appendChild(inner); document.body.appendChild(overlay);
+
+        // animate in
+        requestAnimationFrame(()=> overlay.classList.add('open'));
+
+        // interactions (animated close)
+        function removeOverlay(){ overlay.classList.remove('open'); setTimeout(()=>{ if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay); document.removeEventListener('keydown', onKey); }, 380); }
+        close.addEventListener('click', removeOverlay);
+        overlay.addEventListener('click', (e)=>{ if(e.target === overlay) removeOverlay(); });
+        function onKey(e){ if(e.key === 'Escape') removeOverlay(); }
+        document.addEventListener('keydown', onKey);
+        try{ close.focus({preventScroll:true}); }catch(e){ close.focus(); }
+      }
+      // Open a video in a new window with a simple player
+      function openVideoInWindow(src, title){
+        if(!src) return;
+        try{
+          const w = window.open('', '_blank', 'width=960,height=540');
+          if(!w) return;
+          const safeSrc = String(src).replace(/"/g, '%22');
+          const html = '<!doctype html><html><head><meta charset="utf-8"><title>' + (title||'Reproductor') + '</title>'+
+            '<style>body{margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh}video{max-width:100%;max-height:100%}</style>'+
+            '</head><body><video controls src="'+safeSrc+'"></video></body></html>';
+          w.document.open(); w.document.write(html); w.document.close(); w.focus();
+        }catch(e){ /* popup blocked or other errors */ }
+      }
       window.ElGuardian = window.ElGuardian || {}; window.ElGuardian.addCharacter = function(obj){ characters.push(obj); renderGrid(); };
     })();
   </script>
