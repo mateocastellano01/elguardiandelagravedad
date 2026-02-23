@@ -188,7 +188,8 @@
       .break-gravedad{display:block;margin-top:6px}
       .letter{display:inline-block;vertical-align:middle}
       /* Restore responsive guardian image sizing from base rules to avoid horizontal overflow */
-      .guardian-img{width:85vw;max-width:900px;top:56%}
+      /* Slightly larger hero illustration on small screens but capped to viewport to avoid horizontal overflow */
+      .guardian-img{width:560px;max-width:92vw;top:42%}
       .tagline{font-size:.95rem}
       /* When opened inside Instagram's in-app browser, increase subtitle by 2px total */
       html.is-instagram .tagline{font-size:calc(.95rem + 2px) !important}
