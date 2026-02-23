@@ -175,15 +175,16 @@
 
     @media (max-width:768px){
       /* Increase title on small screens so it fits visually in problematic WebViews */
-      h1{font-size:2.6rem;letter-spacing:1.0px;line-height:1.02;word-break:normal;overflow-wrap:normal;hyphens:none}
+      /* Use viewport width units on mobile so the title scales with screen width */
+      h1{font-size:10.5vw;letter-spacing:1.0px;line-height:1.02;word-break:normal;overflow-wrap:normal;hyphens:none}
       .guardian-img{width:560px;top:42%}
       .tagline{font-size:.95rem}
       /* When opened inside Instagram's in-app browser, increase subtitle by 2px total */
       html.is-instagram .tagline{font-size:calc(.95rem + 2px) !important}
       /* For Instagram only: force "GRAVEDAD" to a new line */
       html.is-instagram .break-gravedad{display:block;margin-top:6px}
-      /* Increase main title by 1px only in Instagram WebView */
-      html.is-instagram h1{font-size:calc(2.6rem + 1px) !important}
+      /* Increase main title slightly in Instagram WebView (still using vw) */
+      html.is-instagram h1{font-size:calc(10.5vw + 1px) !important}
       .tagline-line{display:block;margin-bottom:8px}
       .tagline-line:last-child{margin-bottom:0}
       .time-unit{min-width:48px}
