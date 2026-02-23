@@ -177,6 +177,8 @@
       /* Increase title on small screens so it fits visually in problematic WebViews */
       /* Responsive clamp: scales down on very small viewports but never exceeds the current mobile size (2.6rem) */
       h1{font-size:clamp(1.9rem, calc(1.2rem + 3.2vw), 2.6rem);letter-spacing:1.0px;line-height:1.02;word-break:normal;overflow-wrap:normal;hyphens:none}
+      /* Prevent words from breaking inside themselves on mobile */
+      .hero h1 .w{white-space:nowrap;display:inline-block}
       .guardian-img{width:560px;top:42%}
       .tagline{font-size:.95rem}
       /* When opened inside Instagram's in-app browser, increase subtitle by 2px total */
@@ -347,7 +349,7 @@
     <img src="Ilustración El Guardian WEB.webp" alt="Ilustración El Guardián de la Gravedad" class="guardian-img" aria-hidden="true" decoding="async" fetchpriority="high" loading="eager" srcset="Ilustración El Guardian WEB.webp 1x" sizes="85vw">
 
     <div class="hero" role="banner">
-      <h1 id="main-title">EL GUARDIÁN DE LA <span class="break-gravedad">GRAVEDAD</span></h1>
+      <h1 id="main-title"><span class="w">EL</span> <span class="w">GUARDIÁN</span> <span class="w">DE</span> <span class="w">LA</span> <span class="w break-gravedad">GRAVEDAD</span></h1>
       <p id="main-sub" class="tagline">El peso de una RESPONSABILIDAD, frente a los ojos de un DESTINO.</p>
 
       <div class="count-wrap wind delay-4">
