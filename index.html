@@ -176,17 +176,16 @@
     @media (max-width:768px){
       /* Mobile: fluid, bounded title size to adapt to any screen using clamp() */
       h1{
-        /* Fluid but more conservative min size, allow wrapping and avoid cuts */
-        font-size:clamp(1.4rem,7.5vw,3rem);
-        letter-spacing:0.6px;
-        line-height:1.05;
-        white-space:normal; /* allow wrapping */
-        word-break:break-word;
-        overflow-wrap:break-word;
-        display:inline-block; /* so max-width applies for wrapping */
-        max-width:92vw; /* keep the title inside the viewport */
+        /* Revert to previous mobile size; allow normal wrapping but keep original spacing */
+        font-size:2.6rem;
+        letter-spacing:1.0px;
+        line-height:1.02;
+        word-break:normal;
+        overflow-wrap:normal;
         hyphens:none;
       }
+      /* Force GRAVEDAD onto the next line on mobile */
+      .break-gravedad{display:block;margin-top:6px}
       .guardian-img{width:560px;top:42%}
       .tagline{font-size:.95rem}
       /* When opened inside Instagram's in-app browser, increase subtitle by 2px total */
