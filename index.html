@@ -176,11 +176,15 @@
     @media (max-width:768px){
       /* Mobile: fluid, bounded title size to adapt to any screen using clamp() */
       h1{
-        font-size:clamp(1.9rem,8.5vw,3rem);
-        letter-spacing:1.0px;
-        line-height:1.02;
-        word-break:normal;
-        overflow-wrap:normal;
+        /* Fluid but more conservative min size, allow wrapping and avoid cuts */
+        font-size:clamp(1.4rem,7.5vw,3rem);
+        letter-spacing:0.6px;
+        line-height:1.05;
+        white-space:normal; /* allow wrapping */
+        word-break:break-word;
+        overflow-wrap:break-word;
+        display:inline-block; /* so max-width applies for wrapping */
+        max-width:92vw; /* keep the title inside the viewport */
         hyphens:none;
       }
       .guardian-img{width:560px;top:42%}
