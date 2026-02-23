@@ -174,22 +174,9 @@
     @media (min-width:1200px){ .bitacora-list video,.bitacora-list img{height:320px} }
 
     @media (max-width:768px){
-      /* Mobile: use original header clipping and responsive guardian image */
-      h1{
-        font-size:var(--title-size, 2.6rem);
-        letter-spacing:1.0px;
-        line-height:1.12;
-        word-break:break-word;
-        overflow-wrap:break-word;
-        hyphens:none;
-        margin-bottom:10px;
-      }
-      /* Force GRAVEDAD onto the next line on mobile */
-      .break-gravedad{display:block;margin-top:6px}
-      .letter{display:inline-block;vertical-align:middle}
-      /* Restore responsive guardian image sizing from base rules to avoid horizontal overflow */
-      /* Larger hero illustration on small screens using px for desired size but capped to viewport to avoid horizontal overflow */
-      .guardian-img{width:600px;max-width:92vw;top:42%}
+      /* Increase title on small screens so it fits visually in problematic WebViews */
+      h1{font-size:2.6rem;letter-spacing:1.0px;line-height:1.02;word-break:normal;overflow-wrap:normal;hyphens:none}
+      .guardian-img{width:560px;top:42%}
       .tagline{font-size:.95rem}
       /* When opened inside Instagram's in-app browser, increase subtitle by 2px total */
       html.is-instagram .tagline{font-size:calc(.95rem + 2px) !important}
@@ -201,10 +188,11 @@
       .tagline-line:last-child{margin-bottom:0}
       .time-unit{min-width:48px}
       .time-value{padding:6px 8px}
-      /* top-nav spacing left as default (no mobile override) */
+      .top-nav ul{gap:12px;padding:12px 8px}
       .panel{padding:18px}
       .acciones{flex-direction:column}
       /* Mobile hero spacing fix: avoid title/subtitle overlapping or sitting too close to the counter */
+      h1{margin-bottom:10px}
       .tagline{margin-bottom:10px}
       .count-wrap{margin-top:10px}
       /* No extra fallback — use the larger size so the title displays prominently */
@@ -1279,20 +1267,6 @@
         }catch(e){ /* ignore */ }
       })();
     </script>
-    <script>
-      (function(){
-        function setTitleSize(){
-          const w = Math.max(window.innerWidth || 0, document.documentElement.clientWidth || 0);
-          // factor controls relation between viewport width and title px size. Tune min/max to taste.
-          const px = Math.round(Math.max(26, Math.min(42, w * 0.085)));
-          try{ document.documentElement.style.setProperty('--title-size', px + 'px'); }catch(e){ /* ignore */ }
-        }
-        setTitleSize();
-        window.addEventListener('resize', setTitleSize, {passive:true});
-        window.addEventListener('orientationchange', setTitleSize);
-        // Some WebViews/layouts adjust after a short delay
-        setTimeout(setTitleSize, 500);
-      })();
-    </script>
+    
 </body>
 </html>
