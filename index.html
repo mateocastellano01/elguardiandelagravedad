@@ -174,8 +174,15 @@
     @media (min-width:1200px){ .bitacora-list video,.bitacora-list img{height:320px} }
 
     @media (max-width:768px){
-      /* Increase title on small screens so it fits visually in problematic WebViews */
-      h1{font-size:2.6rem;letter-spacing:1.0px;line-height:1.02;word-break:normal;overflow-wrap:normal;hyphens:none}
+      /* Mobile: fluid, bounded title size to adapt to any screen using clamp() */
+      h1{
+        font-size:clamp(1.9rem,8.5vw,3rem);
+        letter-spacing:1.0px;
+        line-height:1.02;
+        word-break:normal;
+        overflow-wrap:normal;
+        hyphens:none;
+      }
       .guardian-img{width:560px;top:42%}
       .tagline{font-size:.95rem}
       /* When opened inside Instagram's in-app browser, increase subtitle by 2px total */
