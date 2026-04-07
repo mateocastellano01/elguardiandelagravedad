@@ -318,6 +318,100 @@
     .mute-btn:hover{transform:translateY(-2px) scale(1.05)}
     .mute-btn:active{transform:translateY(1px)}
     .mute-btn.muted{opacity:0.5}
+
+    /* Botón toggle flotante */
+    .float-toggle-btn{
+      position:fixed;right:18px;bottom:74px;z-index:1200;border-radius:50%;width:48px;height:48px;background:linear-gradient(90deg,#0f3f3b,#0b2a28);color:#eaf7f4;border:1px solid rgba(110,168,161,0.12);box-shadow:0 10px 30px rgba(6,36,34,0.22);cursor:pointer;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+      opacity:1;
+      visibility:visible;
+      transition:bottom 420ms ease,transform 160ms ease;
+    }
+    .float-toggle-btn:hover{transform:translateY(-2px) scale(1.05)}
+    .float-toggle-btn:active{transform:translateY(1px)}
+    .float-toggle-btn.disabled{opacity:0.5}
+    .float-toggle-btn.moved-up{bottom:136px}
+
+    /* Enlace flotante Instagram - intermitente y móvil */
+    .ig-float{
+      position:fixed;
+      left:50px;
+      top:50%;
+      z-index:1200;
+      cursor:pointer;
+      text-decoration:none;
+      opacity:0;
+      visibility:hidden;
+      transform:scale(0.8);
+      transition:left 6s cubic-bezier(.25,.1,.25,1), top 6s cubic-bezier(.25,.1,.25,1), opacity 600ms ease, visibility 600ms ease, transform 300ms cubic-bezier(.22,.9,.29,1);
+    }
+    .ig-float.visible{
+      opacity:1;
+      visibility:visible;
+      transform:scale(1);
+    }
+    .ig-float:hover{
+      transform:scale(1.08);
+    }
+    .ig-float-img{
+      width:80px;
+      height:80px;
+      object-fit:contain;
+      filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+      animation:orbeFloat 4s ease-in-out infinite;
+    }
+    @keyframes orbeFloat{
+      0%,100%{transform:translateY(0) rotate(0deg)}
+      50%{transform:translateY(-10px) rotate(3deg)}
+    }
+    /* Globo de texto con logo Instagram */
+    .ig-bubble{
+      position:absolute;
+      top:-48px;
+      left:50%;
+      transform:translateX(-50%) scale(0.8);
+      background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      padding:8px 12px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      box-shadow:0 4px 16px rgba(188,24,136,0.5);
+      opacity:0;
+      transition:opacity 300ms ease, transform 300ms ease;
+      white-space:nowrap;
+    }
+    .ig-bubble::after{
+      content:'';
+      position:absolute;
+      bottom:-8px;
+      left:50%;
+      transform:translateX(-50%);
+      border-left:8px solid transparent;
+      border-right:8px solid transparent;
+      border-top:10px solid #dc2743;
+    }
+    .ig-float:hover .ig-bubble,
+    .ig-float.visible .ig-bubble{
+      opacity:1;
+      transform:translateX(-50%) scale(1);
+      animation:bubblePulse 2s ease-in-out infinite;
+    }
+    @keyframes bubblePulse{
+      0%,100%{transform:translateX(-50%) scale(1)}
+      50%{transform:translateX(-50%) scale(1.05)}
+    }
+    .ig-bubble-icon{
+      width:20px;
+      height:20px;
+      fill:#fff;
+    }
+    .ig-bubble-text{
+      color:#fff;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:0.3px;
+    }
+
     /* --- Character grid + modal styles --- */
     .characters-section{padding:28px 14px 44px}
     .characters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:980px;margin:22px auto 6px}
@@ -792,7 +886,19 @@
   </footer>
 
   <button class="mute-btn muted" id="mute-btn" aria-label="Activar sonido" title="Silenciar/Activar sonido">🔇</button>
+  <button class="float-toggle-btn" id="float-toggle" aria-label="Desactivar orbe flotante" title="Activar/Desactivar orbe flotante">👁️</button>
   <button class="bg-reset-btn" id="bg-reset" aria-label="Ir al inicio">Ir al inicio</button>
+
+  <!-- Enlace flotante a Instagram (aparece intermitentemente) -->
+  <a href="https://instagram.com/mat.bitacora.alien" target="_blank" rel="noopener noreferrer" class="ig-float" id="ig-float" aria-label="Seguime en Instagram" title="Seguime en Instagram">
+    <div class="ig-bubble">
+      <svg class="ig-bubble-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+      <span class="ig-bubble-text">@mat.bitacora.alien</span>
+    </div>
+    <img src="FLOTANTE/Orbe%20Negro.webp" alt="" class="ig-float-img">
+  </a>
 
   <script>
     (function(){
@@ -805,24 +911,36 @@
       function playFlipSound(){
         if(isMuted) return;
         try{
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
+          const now = audioCtx.currentTime;
+          const baseVolume = 0.55 * volumeMultiplier;
           
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          // === TICK seco y dramático de reloj ===
           
-          // Epic mechanical flip sound
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(320, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.08);
+          // Capa 1: Click agudo corto (el "tick" seco)
+          const tickOsc = audioCtx.createOscillator();
+          const tickGain = audioCtx.createGain();
+          tickOsc.type = 'sine';
+          tickOsc.frequency.setValueAtTime(2200, now);
+          tickOsc.frequency.exponentialRampToValueAtTime(1000, now + 0.008);
+          tickGain.gain.setValueAtTime(baseVolume * 0.7, now);
+          tickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+          tickOsc.connect(tickGain);
+          tickGain.connect(audioCtx.destination);
+          tickOsc.start(now);
+          tickOsc.stop(now + 0.015);
           
-          const baseVolume = 0.35;
-          const dynamicVolume = Math.max(0.01, baseVolume * volumeMultiplier);
-          gain.gain.setValueAtTime(dynamicVolume, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+          // Capa 2: Golpe grave muy corto (peso sin resonancia)
+          const deepOsc = audioCtx.createOscillator();
+          const deepGain = audioCtx.createGain();
+          deepOsc.type = 'sine';
+          deepOsc.frequency.setValueAtTime(90, now);
+          deepGain.gain.setValueAtTime(baseVolume * 0.35, now);
+          deepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          deepOsc.connect(deepGain);
+          deepGain.connect(audioCtx.destination);
+          deepOsc.start(now);
+          deepOsc.stop(now + 0.06);
           
-          osc.start(audioCtx.currentTime);
-          osc.stop(audioCtx.currentTime + 0.08);
         } catch(e){ console.log('Audio error:', e); }
       }
 
@@ -991,15 +1109,18 @@
 
       // 'Ir al inicio' button: show on scroll down with fade-in
       const resetBtn = document.getElementById('bg-reset');
+      const floatToggleBtn = document.getElementById('float-toggle');
       
       // Show/hide buttons based on scroll position
       window.addEventListener('scroll', () => {
         if(window.pageYOffset > 300){
           resetBtn.classList.add('show');
           muteBtn.classList.add('moved-up');
+          if(floatToggleBtn) floatToggleBtn.classList.add('moved-up');
         } else {
           resetBtn.classList.remove('show');
           muteBtn.classList.remove('moved-up');
+          if(floatToggleBtn) floatToggleBtn.classList.remove('moved-up');
         }
       }, {passive:true});
 
@@ -1310,6 +1431,98 @@
             document.documentElement.classList.add('is-instagram');
           }
         }catch(e){ /* ignore */ }
+      })();
+    </script>
+
+    <!-- Instagram flotante intermitente y móvil -->
+    <script>
+      (function(){
+        const igFloat = document.getElementById('ig-float');
+        const floatToggle = document.getElementById('float-toggle');
+        if(!igFloat) return;
+        
+        // Configuración: tiempos en milisegundos
+        const SHOW_DURATION = 12000;   // Visible por 12 segundos
+        const HIDE_DURATION = 20000;   // Oculto por 20 segundos
+        const INITIAL_DELAY = 5000;    // Primera aparición después de 5 segundos
+        const MOVE_INTERVAL = 6000;    // Cambiar posición cada 6 segundos (más lento)
+        
+        let moveTimer = null;
+        let cycleTimer = null;
+        let isEnabled = true;
+        
+        function randomPos(){
+          // Margen de seguridad para no salirse de la pantalla
+          const margin = 70;
+          const maxX = window.innerWidth - margin;
+          const maxY = window.innerHeight - margin;
+          const x = margin + Math.random() * (maxX - margin);
+          const y = margin + Math.random() * (maxY - margin);
+          return { x, y };
+        }
+        
+        function moveToRandom(){
+          const pos = randomPos();
+          igFloat.style.left = pos.x + 'px';
+          igFloat.style.top = pos.y + 'px';
+        }
+        
+        function startMoving(){
+          moveToRandom(); // posición inicial
+          moveTimer = setInterval(moveToRandom, MOVE_INTERVAL);
+        }
+        
+        function stopMoving(){
+          if(moveTimer){ clearInterval(moveTimer); moveTimer = null; }
+        }
+        
+        function show(){
+          if(!isEnabled) return;
+          moveToRandom();
+          igFloat.classList.add('visible');
+          startMoving();
+          cycleTimer = setTimeout(hide, SHOW_DURATION);
+        }
+        
+        function hide(){
+          stopMoving();
+          igFloat.classList.remove('visible');
+          if(isEnabled){
+            cycleTimer = setTimeout(show, HIDE_DURATION);
+          }
+        }
+        
+        function disableFloat(){
+          isEnabled = false;
+          if(cycleTimer){ clearTimeout(cycleTimer); cycleTimer = null; }
+          stopMoving();
+          igFloat.classList.remove('visible');
+          floatToggle.classList.add('disabled');
+          floatToggle.textContent = '🙈';
+          floatToggle.title = 'Activar orbe flotante';
+        }
+        
+        function enableFloat(){
+          isEnabled = true;
+          floatToggle.classList.remove('disabled');
+          floatToggle.textContent = '👁️';
+          floatToggle.title = 'Desactivar orbe flotante';
+          cycleTimer = setTimeout(show, 2000); // aparece en 2 segundos
+        }
+        
+        // Toggle button
+        if(floatToggle){
+          floatToggle.addEventListener('click', ()=>{
+            if(isEnabled){
+              disableFloat();
+            } else {
+              enableFloat();
+            }
+          });
+        }
+        
+        // Iniciar ciclo después del delay inicial
+        cycleTimer = setTimeout(show, INITIAL_DELAY);
       })();
     </script>
     
