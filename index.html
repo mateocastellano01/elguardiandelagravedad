@@ -391,6 +391,29 @@
       .tagline{margin-bottom:10px}
       .count-wrap{margin-top:10px}
       /* No extra fallback — use the larger size so the title displays prominently */
+
+      /* ── MOBILE PERFORMANCE OVERRIDES ── */
+      /* Kill body::after starDrift (5 radial-gradients animados = muy caro) */
+      body::after{display:none}
+      /* Kill outer ring (ringRotate en GPU pero innecesario en mobile pequeño) */
+      header::after{display:none}
+      /* Simplificar nebulosa: sin box-shadow compuesto */
+      header::before{
+        background:radial-gradient(circle at 50% 50%,rgba(180,228,255,0.06) 0%,transparent 60%);
+        box-shadow:none;
+        animation:halospin 80s linear infinite;
+      }
+      /* Quitar blur glow del hero (blur() no es composited en mobile) */
+      .hero::after{display:none}
+      /* Reducir backdrop-filter en panels (costoso en Android) */
+      .panel{backdrop-filter:blur(2px)}
+      .top-nav{backdrop-filter:blur(2px)}
+      /* Promover guardian-img a capa GPU */
+      .guardian-img{will-change:transform}
+      /* Aliviar divine-active: quitar filter en count-wrap y hero-after */
+      .divine-active .count-wrap{filter:none}
+      /* Ralentizar orbitBreath para reducir frecuencia de compositing */
+      .divine-active .guardian-img{animation:orbitBreath 22s ease-in-out infinite}
     }
 
     /* EPIC BACKGROUND ANIMATION (applies to body::before when activated) */
@@ -713,16 +736,16 @@
       box-shadow:0 0 7px 1px rgba(205,240,255,0.55);
       animation:shootStar var(--dur,2.6s) var(--del,0s) linear forwards;
       transform-origin:left center;
-      top:var(--y,12%);
+      top:var(--y,15%);
       left:-10px;
       opacity:0;
     }
     @keyframes shootStar{
-      0%  { transform:rotate(var(--ang,-34deg)) translate(0,0) scaleX(1); opacity:0; }
-      4%  { opacity:0.92; transform:rotate(var(--ang,-34deg)) translate(4vw,0) scaleX(16); }
-      25% { opacity:0.78; transform:rotate(var(--ang,-34deg)) translate(28vw,0) scaleX(32); }
-      75% { opacity:0.28; }
-      100%{ transform:rotate(var(--ang,-34deg)) translate(145vw,0) scaleX(5); opacity:0; }
+      0%  { transform:rotate(var(--ang,14deg)) translate(0,0)     scaleX(1);  opacity:0; }
+      4%  { transform:rotate(var(--ang,14deg)) translate(5vw,0)   scaleX(18); opacity:0.90; }
+      25% { transform:rotate(var(--ang,14deg)) translate(40vw,0)  scaleX(34); opacity:0.76; }
+      72% { transform:rotate(var(--ang,14deg)) translate(105vw,0) scaleX(18); opacity:0.22; }
+      100%{ transform:rotate(var(--ang,14deg)) translate(150vw,0) scaleX(5);  opacity:0; }
     }
     /* ===== SCROLL PROGRESS BAR ===== */
     .scroll-progress{
@@ -732,6 +755,76 @@
       width:0%;
       pointer-events:none;
       transition:width 80ms linear;
+    }
+
+    /* ===== MOBILE KEYFRAME OVERRIDES (simplificados, sin filter:blur) ===== */
+    @media (max-width:768px){
+      /* epicImg: 4 fases, sin blur() — blur() fuerza repaint en cada frame en mobile */
+      @keyframes epicImg{
+        0%  {transform:translate(-50%,-50%) translateY(12vh) scale(.40);opacity:0;   filter:brightness(.3) saturate(0);}
+        22% {transform:translate(-50%,-50%) translateY(-2vh) scale(1.16);opacity:0.38;filter:brightness(1.38) saturate(1.1);}
+        60% {transform:translate(-50%,-50%) translateY(-2vh) scale(1.05);opacity:0.22;filter:brightness(1.03) saturate(1);}
+        100%{transform:translate(-50%,-50%) translateY(0)    scale(1);   opacity:0.18;filter:brightness(1) saturate(.98);}
+      }
+      /* epicBg: 3 fases */
+      @keyframes epicBg{
+        0%  {opacity:0;   filter:brightness(.2) saturate(0);}
+        22% {opacity:0.26;filter:brightness(1.18) saturate(1.0);}
+        100%{opacity:0.18;filter:brightness(1) saturate(.98);}
+      }
+      /* cosmicBreath: solo opacidad + scale mínimo, sin filter */
+      @keyframes cosmicBreath{
+        0%,100%{transform:scale(1) translateY(0);opacity:0.15;filter:none}
+        50%    {transform:scale(1.02) translateY(-0.5vh);opacity:0.19;filter:none}
+      }
+      /* introBurst: 3 fases */
+      @keyframes introBurst{
+        0%  {opacity:0;transform:scale(.65);}
+        28% {opacity:0.38;transform:scale(1.05);}
+        100%{opacity:0;transform:scale(1);}
+      }
+      /* introRays: 3 fases */
+      @keyframes introRays{
+        0%  {opacity:0;  transform:translate(-50%,-50%) rotate(-5deg);}
+        28% {opacity:0.34;transform:translate(-50%,-50%) rotate(8deg);}
+        100%{opacity:0;  transform:translate(-50%,-50%) rotate(62deg);}
+      }
+      /* divinePulse: text-shadow más ligero (repaints en mobile) */
+      @keyframes divinePulse{
+        0%,100%{text-shadow:0 0 10px rgba(159,230,221,0.20),0 0 22px rgba(159,230,221,0.08);}
+        50%    {text-shadow:0 0 14px rgba(198,240,255,0.28),0 0 28px rgba(177,224,255,0.12);}
+      }
+      /* halopulse: rango de opacidad más estrecho */
+      @keyframes halopulse{
+        0%,100%{opacity:0.18;}
+        50%    {opacity:0.36;}
+      }
+      /* timeAura: sin box-shadow animado (no composited en mobile) */
+      @keyframes timeAura{
+        0%,100%{border-color:rgba(143,174,199,0.14);}
+        50%    {border-color:rgba(168,210,234,0.26);}
+      }
+    }
+
+    /* ===== PREFERS-REDUCED-MOTION ===== */
+    @media (prefers-reduced-motion:reduce){
+      .sstar{display:none}
+      #intro-veil,#intro-burst,#intro-rays{display:none}
+      @keyframes epicImg{
+        0%,100%{transform:translate(-50%,-50%) scale(1) translateY(0);opacity:0.18;filter:brightness(1) saturate(.98);}
+      }
+      @keyframes epicBg{
+        0%,100%{opacity:0.18;filter:brightness(1) saturate(.98);}
+      }
+      @keyframes cosmicBreath{0%,100%{opacity:0.17;}}
+      @keyframes orbitBreath {
+        0%,100%{transform:translate(-50%,-50%) scale(1);filter:brightness(1);}
+      }
+      @keyframes halospin{0%,100%{transform:translate(-50%,-50%) rotate(0deg);}}
+      @keyframes divineHalo{0%,100%{opacity:0.36;}}
+      @keyframes divinePulse{0%,100%{text-shadow:0 0 10px rgba(159,230,221,0.20);}}
+      @keyframes timeAura{0%,100%{border-color:rgba(143,174,199,0.14);}}
+      @keyframes taglinePulse{0%,100%{color:#9bc7c0;}}
     }
   </style>
 </head>
@@ -1301,16 +1394,21 @@
           }, {passive:true});
 
           // Shooting stars: inject and auto-respawn on animation end
+          const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+          const starCount = isMobile ? 3 : 8;
           function resetStar(el){
-            el.style.setProperty('--dur', (1.8 + Math.random()*3.2).toFixed(2)+'s');
-            el.style.setProperty('--del', (Math.random()*18).toFixed(2)+'s');
-            el.style.setProperty('--y',   (3 + Math.random()*60).toFixed(1)+'%');
-            el.style.setProperty('--ang', (-32 + Math.random()*18).toFixed(1)+'deg');
+            // Mobile: longer duration = fewer concurrent transitions = less GPU pressure
+            const durBase = isMobile ? 3.4 : 2.2;
+            const durRange = isMobile ? 2.8 : 3.0;
+            el.style.setProperty('--dur', (durBase + Math.random()*durRange).toFixed(2)+'s');
+            el.style.setProperty('--del', (Math.random()*(isMobile ? 26 : 20)).toFixed(2)+'s');
+            el.style.setProperty('--y',   (4 + Math.random()*72).toFixed(1)+'%');
+            el.style.setProperty('--ang', (8 + Math.random()*16).toFixed(1)+'deg');
             el.style.animation = 'none';
             void el.offsetWidth;
             el.style.animation = '';
           }
-          for(let i = 0; i < 8; i++){
+          for(let i = 0; i < starCount; i++){
             const s = document.createElement('div');
             s.className = 'sstar';
             resetStar(s);
