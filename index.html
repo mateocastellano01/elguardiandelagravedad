@@ -414,6 +414,36 @@
       .divine-active .count-wrap{filter:none}
       /* Ralentizar orbitBreath para reducir frecuencia de compositing */
       .divine-active .guardian-img{animation:orbitBreath 22s ease-in-out infinite}
+
+      /* ── MOBILE PERFORMANCE 2º PASADA ── */
+      /* Quitar backdrop-filter por completo (incluso 2px es caro en Android) */
+      .panel{backdrop-filter:none}
+      .top-nav{backdrop-filter:none}
+      /* Kill shockwaves: usan filter:blur() en sus keyframes */
+      h1::after,.tagline::after{content:none}
+      /* Quitar drop-shadow del título (filter en texto = repaint) */
+      h1.glow{filter:none}
+      /* Eliminar contextos 3D del contador (crean stacking layers extra) */
+      .time-unit{perspective:none}
+      .time-value{transform-style:flat;backface-visibility:visible}
+      /* Sin transición de box-shadow en panels (no composited) */
+      .reveal.is-visible .panel{box-shadow:none;transition:none}
+      /* Fondo plano en body (radial-gradient se repinta al resize) */
+      body{background:#02060c}
+      /* Contener repaint del header */
+      header{contain:layout paint}
+      /* Duración reducida de la animación intro */
+      .guardian-img.img-epic{animation-duration:6200ms}
+      body.bg-epic::before{animation-duration:6200ms}
+      /* Duración reducida de la entrada del hero */
+      h1.animate,.tagline.animate{animation-duration:1400ms}
+      /* will-change en estrellas fugaces */
+      .sstar{will-change:transform;box-shadow:none}
+      /* Deferred rendering en secciones fuera de pantalla (Chrome 85+ / Safari 15.4+) */
+      #bitacora,#proyecto,#comisiones,#sobre-mi{
+        content-visibility:auto;
+        contain-intrinsic-size:0 480px;
+      }
     }
 
     /* EPIC BACKGROUND ANIMATION (applies to body::before when activated) */
@@ -757,52 +787,68 @@
       transition:width 80ms linear;
     }
 
-    /* ===== MOBILE KEYFRAME OVERRIDES (simplificados, sin filter:blur) ===== */
+    /* ===== MOBILE KEYFRAME OVERRIDES (transform+opacity únicamente, sin filter) ===== */
     @media (max-width:768px){
-      /* epicImg: 4 fases, sin blur() — blur() fuerza repaint en cada frame en mobile */
+      /* epicImg: solo transform+opacity — filter eliminado por completo */
       @keyframes epicImg{
-        0%  {transform:translate(-50%,-50%) translateY(12vh) scale(.40);opacity:0;   filter:brightness(.3) saturate(0);}
-        22% {transform:translate(-50%,-50%) translateY(-2vh) scale(1.16);opacity:0.38;filter:brightness(1.38) saturate(1.1);}
-        60% {transform:translate(-50%,-50%) translateY(-2vh) scale(1.05);opacity:0.22;filter:brightness(1.03) saturate(1);}
-        100%{transform:translate(-50%,-50%) translateY(0)    scale(1);   opacity:0.18;filter:brightness(1) saturate(.98);}
+        0%  {transform:translate(-50%,-50%) translateY(12vh) scale(.40);opacity:0;}
+        22% {transform:translate(-50%,-50%) translateY(-2vh) scale(1.14);opacity:0.36;}
+        60% {transform:translate(-50%,-50%) translateY(-2vh) scale(1.04);opacity:0.22;}
+        100%{transform:translate(-50%,-50%) translateY(0)    scale(1);   opacity:0.18;}
       }
-      /* epicBg: 3 fases */
+      /* epicBg: solo opacity — sin filter */
       @keyframes epicBg{
-        0%  {opacity:0;   filter:brightness(.2) saturate(0);}
-        22% {opacity:0.26;filter:brightness(1.18) saturate(1.0);}
-        100%{opacity:0.18;filter:brightness(1) saturate(.98);}
+        0%  {opacity:0;}
+        22% {opacity:0.20;}
+        100%{opacity:0.18;}
       }
-      /* cosmicBreath: solo opacidad + scale mínimo, sin filter */
+      /* cosmicBreath: scale mínimo + opacity, sin filter */
       @keyframes cosmicBreath{
-        0%,100%{transform:scale(1) translateY(0);opacity:0.15;filter:none}
-        50%    {transform:scale(1.02) translateY(-0.5vh);opacity:0.19;filter:none}
+        0%,100%{transform:scale(1)     translateY(0);     opacity:0.15;}
+        50%    {transform:scale(1.012) translateY(-0.3vh);opacity:0.18;}
       }
-      /* introBurst: 3 fases */
+      /* windIn: sin skewX (genera nuevo contexto de capa en el compositor) */
+      @keyframes windIn{
+        0%  {opacity:0; transform:translateX(-60px);}
+        60% {opacity:1; transform:translateX(10px);}
+        100%{opacity:1; transform:translateX(0);}
+      }
+      /* epicEntrance: 3 frames, sin multi-bounce */
+      @keyframes epicEntrance{
+        0%  {opacity:0; transform:scale(0.5);}
+        55% {opacity:1; transform:scale(1.03);}
+        100%{opacity:1; transform:scale(1);}
+      }
+      /* shockwave: fade simple, sin filter:blur */
+      @keyframes shockwave{
+        0%  {opacity:0.32; transform:scale(1);}
+        100%{opacity:0;    transform:scale(1.5);}
+      }
+      /* introBurst: 2 fases */
       @keyframes introBurst{
-        0%  {opacity:0;transform:scale(.65);}
-        28% {opacity:0.38;transform:scale(1.05);}
-        100%{opacity:0;transform:scale(1);}
+        0%  {opacity:0;    transform:scale(.65);}
+        28% {opacity:0.30; transform:scale(1.04);}
+        100%{opacity:0;    transform:scale(1);}
       }
-      /* introRays: 3 fases */
-      @keyframes introRays{
-        0%  {opacity:0;  transform:translate(-50%,-50%) rotate(-5deg);}
-        28% {opacity:0.34;transform:translate(-50%,-50%) rotate(8deg);}
-        100%{opacity:0;  transform:translate(-50%,-50%) rotate(62deg);}
-      }
-      /* divinePulse: text-shadow más ligero (repaints en mobile) */
+      /* divinePulse: text-shadow mínimo */
       @keyframes divinePulse{
-        0%,100%{text-shadow:0 0 10px rgba(159,230,221,0.20),0 0 22px rgba(159,230,221,0.08);}
-        50%    {text-shadow:0 0 14px rgba(198,240,255,0.28),0 0 28px rgba(177,224,255,0.12);}
+        0%,100%{text-shadow:0 0 10px rgba(159,230,221,0.14);}
+        50%    {text-shadow:0 0 12px rgba(198,240,255,0.20);}
       }
-      /* halopulse: rango de opacidad más estrecho */
+      /* taglinePulse: solo color, sin text-shadow */
+      @keyframes taglinePulse{
+        0%,100%{color:#9bc7c0;text-shadow:none;}
+        50%    {color:#b8dde0;text-shadow:none;}
+      }
+      /* halopulse: rango estrecho */
       @keyframes halopulse{
-        0%,100%{opacity:0.18;}
-        50%    {opacity:0.36;}
+        0%,100%{opacity:0.14;}
+        50%    {opacity:0.28;}
       }
-      /* timeAura: sin box-shadow animado (no composited en mobile) */
+      /* timeAura: solo border-color */
       @keyframes timeAura{
         0%,100%{border-color:rgba(143,174,199,0.14);}
-        50%    {border-color:rgba(168,210,234,0.26);}
+        50%    {border-color:rgba(168,210,234,0.22);}
       }
     }
 
@@ -1247,6 +1293,9 @@
 
   <script>
     (function(){
+      // Detectar mobile una sola vez para todas las optimizaciones del IIFE
+      const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+
       // Sound system with Web Audio API
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       const audioCtx = new AudioContext();
@@ -1394,7 +1443,6 @@
           }, {passive:true});
 
           // Shooting stars: inject and auto-respawn on animation end
-          const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
           const starCount = isMobile ? 3 : 8;
           function resetStar(el){
             // Mobile: longer duration = fewer concurrent transitions = less GPU pressure
@@ -1487,18 +1535,21 @@
         document.body.classList.add('bg-epic');
         const veil  = document.createElement('div'); veil.id  = 'intro-veil';  document.body.appendChild(veil);
         const burst = document.createElement('div'); burst.id = 'intro-burst'; document.body.appendChild(burst);
-        const rays  = document.createElement('div'); rays.id  = 'intro-rays';  document.body.appendChild(rays);
-        // Clean up after full animation cycle
+        // Skip heavy 220vmax conic-gradient on mobile
+        if(!isMobile){
+          const rays = document.createElement('div'); rays.id = 'intro-rays'; document.body.appendChild(rays);
+        }
+        // Cleanup: shorter delay on mobile (animation-duration also shorter)
         setTimeout(()=>{
           document.body.classList.remove('bg-epic');
           ['intro-veil','intro-burst','intro-rays'].forEach(id=>{
             const el = document.getElementById(id); if(el && el.parentNode) el.parentNode.removeChild(el);
           });
-        }, 9000);
+        }, isMobile ? 6600 : 9000);
 
         guardian.classList.add('img-epic');
-        // Hero text/counter appear at ~4.8s: after veil fully lifts (~3.9s) and guardian is blazing
-        setTimeout(()=>{ if(!windStarted) runWindSequence(); }, 4800);
+        // Hero text: earlier on mobile (6200ms animation vs 8800ms on desktop)
+        setTimeout(()=>{ if(!windStarted) runWindSequence(); }, isMobile ? 3200 : 4800);
         // Fallback: fire on animation end
         const onEnd = () => { guardian.removeEventListener('animationend', onEnd); if(!windStarted) runWindSequence(); };
         guardian.addEventListener('animationend', onEnd);
