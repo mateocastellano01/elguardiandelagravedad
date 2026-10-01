@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>¡Compra confirmada! — El Guardián de la Gravedad</title>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family:'Roboto Condensed',sans-serif;
+      background:radial-gradient(circle at 20% 20%, #10233a 0%, #04080f 45%, #02060c 100%);
+      color:#cfdde7;
+      display:flex;align-items:center;justify-content:center;
+      min-height:100%;padding:24px;
+      -webkit-font-smoothing:antialiased;
+    }
+    .card{
+      max-width:560px;width:100%;text-align:center;
+      background:linear-gradient(180deg,rgba(6,10,14,0.66),rgba(6,10,14,0.5));
+      border:1px solid rgba(110,168,161,0.18);
+      border-radius:16px;padding:42px 32px;backdrop-filter:blur(6px);
+      box-shadow:0 18px 50px rgba(0,0,0,0.4);
+    }
+    .icono{font-size:3rem;margin-bottom:12px}
+    h1{font-size:1.6rem;color:#e6f6f5;letter-spacing:.5px;margin-bottom:14px;text-transform:uppercase}
+    p{line-height:1.6;color:#9fbfc6;margin-bottom:10px}
+    .ref{font-size:.85rem;color:#7fa8a1;margin-top:4px}
+    .btn-volver{
+      display:inline-block;margin-top:22px;padding:12px 30px;
+      background:linear-gradient(90deg,#0f3f3b 0%,#0b2a28 100%);
+      color:#eaf7f4;border-radius:12px;font-weight:700;letter-spacing:1px;text-decoration:none;
+      font-size:.9rem;text-transform:uppercase;transition:transform 160ms ease;
+    }
+    .btn-volver:hover,.btn-volver:focus{transform:translateY(-3px)}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icono">✅</div>
+    <h1>¡Compra confirmada!</h1>
+    <p>Gracias por tu compra del Tomo N°1 de <strong>El Guardián de la Gravedad</strong>.</p>
+    <p>Mercado Pago aprobó el pago. En breve te vamos a contactar por mail para coordinar el envío.</p>
+    <p class="ref" id="orden-ref" hidden></p>
+    <a class="btn-volver" href="index.html">Volver al sitio</a>
+  </div>
+  <script>
+    // Si Mercado Pago agrega datos de la orden como query params, los mostramos como referencia.
+    (function(){
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('external_reference') || params.get('preference_id') || params.get('order_id');
+      if(ref){
+        const el = document.getElementById('orden-ref');
+        el.textContent = 'Referencia de tu pedido: ' + ref;
+        el.hidden = false;
+      }
+    })();
+  </script>
+</body>
+</html>
