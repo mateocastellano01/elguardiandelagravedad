@@ -34,6 +34,7 @@
     body{
       font-family:'Roboto Condensed',sans-serif;
       background:radial-gradient(circle at 20% 20%, #10233a 0%, #04080f 45%, #02060c 100%);
+      background-attachment:fixed;
       color:#cfdde7;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
@@ -43,20 +44,24 @@
     /* BACKGROUND ILLU */
     body::before{
       content:"";
-      position:fixed;inset:0;
+      position:fixed;top:0;left:0;width:100vw;height:100vh;
       background-image:url("Ilustración El Guardian WEB.webp");
       background-repeat:no-repeat;
-      background-position:center;
+      background-position:center center;
       background-size:85vw auto;
+      background-attachment:fixed;
       opacity:0.18;
       z-index:-1;
       pointer-events:none;
       animation:cosmicBreath 16s ease-in-out infinite;
+      will-change:transform, opacity;
+      transform:translateZ(0);
+      backface-visibility:hidden;
     }
 
     body::after{
       content:"";
-      position:fixed;inset:-10% -6%;
+      position:fixed;top:0;left:0;width:100vw;height:100vh;
       z-index:-2;
       pointer-events:none;
       opacity:0.42;
@@ -67,7 +72,12 @@
         radial-gradient(circle at 35% 64%, rgba(180,220,255,0.3) 0 1px, transparent 2px),
         radial-gradient(circle at 92% 84%, rgba(240,247,255,0.34) 0 1px, transparent 2px);
       background-size:380px 380px, 460px 460px, 520px 520px, 420px 420px, 560px 560px;
+      background-repeat:repeat;
+      background-attachment:fixed;
       animation:starDrift 42s linear infinite;
+      will-change:transform, opacity;
+      transform:translateZ(0);
+      backface-visibility:hidden;
     }
 
     @keyframes cosmicBreath {
