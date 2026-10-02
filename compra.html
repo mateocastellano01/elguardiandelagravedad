@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comprar — El Guardián de la Gravedad</title>
+  <meta name="description" content="Formulario de compra de El Guardián de la Gravedad." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Roboto Condensed', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #10233a 0%, #04080f 45%, #02060c 100%);
+      color: #cfdde7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 18px;
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: none;
+    }
+
+    body *, .purchase-card *, .field *, .book-meta * {
+      word-break: normal;
+      overflow-wrap: break-word;
+      hyphens: none;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("Ilustración El Guardian WEB.webp");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 85vw auto;
+      opacity: 0.18;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -10% -6%;
+      z-index: -2;
+      pointer-events: none;
+      opacity: 0.42;
+      background-image:
+        radial-gradient(circle at 12% 18%, rgba(210,236,255,0.45) 0 1px, transparent 2px),
+        radial-gradient(circle at 84% 22%, rgba(184,230,255,0.38) 0 1px, transparent 2px),
+        radial-gradient(circle at 66% 72%, rgba(241,247,255,0.32) 0 1px, transparent 2px),
+        radial-gradient(circle at 35% 64%, rgba(180,220,255,0.3) 0 1px, transparent 2px),
+        radial-gradient(circle at 92% 84%, rgba(240,247,255,0.34) 0 1px, transparent 2px);
+      background-size: 380px 380px, 460px 460px, 520px 520px, 420px 420px, 560px 560px;
+    }
+
+    .page-shell {
+      width: min(100%, 760px);
+      display: flex;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .purchase-card {
+      width: min(100%, 720px);
+      max-width: 100%;
+      background: rgba(8, 18, 32, 0.58);
+      border: 1px solid rgba(110, 168, 161, 0.2);
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      padding: 28px 22px 22px;
+      backdrop-filter: blur(4px);
+      min-width: 0;
+    }
+
+    .eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #9bc7c0;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: #dff8f7;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      line-height: 1.05;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: break-word;
+    }
+
+    .subtitle {
+      color: #b7d9d8;
+      font-size: 1rem;
+      margin-bottom: 22px;
+      line-height: 1.5;
+      max-width: 100%;
+      white-space: normal;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(160, 214, 209, 0.2);
+      min-width: 0;
+    }
+
+    .book {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+      flex: 1 1 280px;
+    }
+
+    .book-cover {
+      width: 88px;
+      height: 116px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #163b4d, #0c1d2d 55%, #0d2321 100%);
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(167, 220, 227, 0.28);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+      color: #e8f8f8;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: center;
+      padding: 10px;
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .book-meta {
+      min-width: 0;
+      flex: 1 1 180px;
+    }
+
+    .book-meta strong {
+      display: block;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: #effbff;
+      margin-bottom: 4px;
+      white-space: normal;
+      line-height: 1.2;
+    }
+
+    .book-meta span {
+      color: #a7c4bf;
+      font-size: 0.9rem;
+      display: block;
+      white-space: normal;
+    }
+
+    .price {
+      font-size: clamp(1.3rem, 2vw, 1.6rem);
+      font-weight: 700;
+      color: #eafafa;
+      white-space: normal;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      color: #9fbfc6;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid rgba(144, 194, 190, 0.2);
+      border-radius: 10px;
+      padding: 10px 11px;
+      background: rgba(6, 12, 20, 0.7);
+      color: #dfeef5;
+      font: inherit;
+      resize: vertical;
+      min-height: 42px;
+    }
+
+    .field textarea { min-height: 80px; }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: rgba(149, 211, 206, 0.75);
+      box-shadow: 0 0 0 2px rgba(134, 208, 201, 0.14);
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .shipping-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-comprar {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(90deg, #0f3f3b 0%, #0b2a28 100%);
+      color: #eaf7f4;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      box-shadow: 0 12px 36px rgba(8,36,34,0.2);
+      transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+      cursor: pointer;
+    }
+
+    .btn-comprar:hover,
+    .btn-comprar:focus {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .secondary-link {
+      color: #9ec7c8;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .compra-error {
+      color: #ffd9d9;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .row,
+      .shipping-row {
+        grid-template-columns: 1fr;
+      }
+
+      .purchase-card {
+        padding: 24px 16px 18px;
+      }
+
+      .product-row {
+        align-items: flex-start;
+      }
+
+      .book {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .book-cover {
+        width: 96px;
+        height: 122px;
+      }
+
+      .actions {
+        justify-content: stretch;
+      }
+
+      .btn-comprar {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <section class="purchase-card" aria-labelledby="purchase-title">
+      <div class="eyebrow">Compra</div>
+      <h1 id="purchase-title">El Guardián de la Gravedad</h1>
+      <p class="subtitle">Completá tus datos para continuar con la compra del Tomo N°1.</p>
+
+      <div class="product-row">
+        <div class="book">
+          <div class="book-cover">TOMO<br>N°1</div>
+          <div class="book-meta">
+            <strong>El Guardián de la Gravedad</strong>
+            <span>Edición con stickers y señalador</span>
+          </div>
+        </div>
+        <div class="price">Desde $16.000 ARS</div>
+      </div>
+
+      <form id="checkout-form" novalidate>
+        <div class="row">
+          <label class="field">
+            <span>Nombre y apellido</span>
+            <input id="customer_name" name="customer_name" type="text" placeholder="Tu nombre y apellido" required>
+          </label>
+          <label class="field">
+            <span>Email</span>
+            <input id="customer_email" name="customer_email" type="email" placeholder="tuemail@email.com" required>
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="field">
+            <span>Teléfono / WhatsApp</span>
+            <input id="customer_phone" name="customer_phone" type="tel" placeholder="11 5555-5555" required>
+          </label>
+          <label class="field">
+            <span>Modalidad</span>
+            <select id="delivery_method" name="delivery_method" required>
+              <option value="entrega_personalizada">Entrega personalizada</option>
+              <option value="envio_personalizado">Envío personalizado</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="shipping-fields" class="shipping-row" hidden>
+          <label class="field">
+            <span>Dirección</span>
+            <input id="shipping_address" name="shipping_address" type="text" placeholder="Calle y número">
+          </label>
+          <label class="field">
+            <span>Ciudad / localidad</span>
+            <input id="shipping_city" name="shipping_city" type="text" placeholder="Ciudad">
+          </label>
+          <label class="field">
+            <span>Provincia</span>
+            <input id="shipping_province" name="shipping_province" type="text" placeholder="Provincia">
+          </label>
+          <label class="field">
+            <span>Código postal</span>
+            <input id="shipping_postal_code" name="shipping_postal_code" type="text" placeholder="Código postal">
+          </label>
+        </div>
+
+        <label class="field full">
+          <span>Comentario</span>
+          <textarea id="customer_note" name="customer_note" placeholder="Comentarios o detalles adicionales (opcional)"></textarea>
+        </label>
+
+        <div class="actions">
+          <a class="secondary-link" href="index.html">Volver a la portada</a>
+          <button id="compra-btn" class="btn-comprar" type="submit">Continuar al pago</button>
+        </div>
+      </form>
+
+      <p id="compra-error" class="compra-error" aria-live="polite" hidden></p>
+    </section>
+  </main>
+
+  <script>
+    const CHECKOUT_BACKEND_URL = 'https://mercadopago-backend-five.vercel.app';
+    const compraBtn = document.getElementById('compra-btn');
+    const compraError = document.getElementById('compra-error');
+    const deliveryMethodSelect = document.getElementById('delivery_method');
+    const shippingFields = document.getElementById('shipping-fields');
+
+    function toggleShippingFields() {
+      if (!shippingFields || !deliveryMethodSelect) return;
+      shippingFields.hidden = deliveryMethodSelect.value !== 'envio_personalizado';
+    }
+
+    if (deliveryMethodSelect) {
+      deliveryMethodSelect.addEventListener('change', toggleShippingFields);
+      toggleShippingFields();
+    }
+
+    function getCheckoutPayload() {
+      const customerName = document.getElementById('customer_name')?.value.trim() || '';
+      const customerEmail = document.getElementById('customer_email')?.value.trim() || '';
+      const customerPhone = document.getElementById('customer_phone')?.value.trim() || '';
+      const deliveryMethod = deliveryMethodSelect ? deliveryMethodSelect.value : 'entrega_personalizada';
+      const shippingAddress = document.getElementById('shipping_address')?.value.trim() || '';
+      const shippingCity = document.getElementById('shipping_city')?.value.trim() || '';
+      const shippingProvince = document.getElementById('shipping_province')?.value.trim() || '';
+      const shippingPostalCode = document.getElementById('shipping_postal_code')?.value.trim() || '';
+      const customerNote = document.getElementById('customer_note')?.value.trim() || '';
+
+      if (!customerName || !customerEmail || !customerPhone || !deliveryMethod) {
+        throw new Error('Completá tu nombre, email, teléfono y modalidad de entrega.');
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+        throw new Error('Ingresá un email válido.');
+      }
+
+      if (deliveryMethod === 'envio_personalizado') {
+        if (!shippingAddress || !shippingCity || !shippingProvince || !shippingPostalCode) {
+          throw new Error('Para envío personalizado, completá dirección, ciudad, provincia y código postal.');
+        }
+      }
+
+      return {
+        customer_name: customerName,
+        customer_email: customerEmail,
+        customer_phone: customerPhone,
+        delivery_method: deliveryMethod,
+        shipping_address: deliveryMethod === 'envio_personalizado' ? shippingAddress : null,
+        shipping_city: deliveryMethod === 'envio_personalizado' ? shippingCity : null,
+        shipping_province: deliveryMethod === 'envio_personalizado' ? shippingProvince : null,
+        shipping_postal_code: deliveryMethod === 'envio_personalizado' ? shippingPostalCode : null,
+        customer_note: customerNote || null,
+      };
+    }
+
+    function setButtonState(isLoading) {
+      if (!compraBtn) return;
+      compraBtn.disabled = isLoading;
+      compraBtn.textContent = isLoading ? 'Procesando...' : 'Continuar al pago';
+    }
+
+    if (compraBtn) {
+      compraBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (compraBtn.disabled) return;
+
+        if (compraError) compraError.hidden = true;
+
+        try {
+          const payload = getCheckoutPayload();
+          setButtonState(true);
+
+          fetch(CHECKOUT_BACKEND_URL + '/api/create-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+            .then(function (response) {
+              if (!response.ok) throw new Error('create-order respondió ' + response.status);
+              return response.json();
+            })
+            .then(function (data) {
+              if (!data || !data.checkout_url) throw new Error('Respuesta sin checkout_url');
+              window.location.href = data.checkout_url;
+            })
+            .catch(function (error) {
+              console.error('No se pudo iniciar la compra:', error);
+              if (compraError) {
+                compraError.textContent = error?.message || 'No pudimos conectar con el checkout. Probá de nuevo en unos segundos.';
+                compraError.hidden = false;
+              }
+              setButtonState(false);
+            });
+        } catch (error) {
+          console.error('Validación del formulario fallida:', error);
+          if (compraError) {
+            compraError.textContent = error.message || 'Completá los datos requeridos.';
+            compraError.hidden = false;
+          }
+          setButtonState(false);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
