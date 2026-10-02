@@ -312,6 +312,25 @@
     .compra-info{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
     .compra-precio{font-size:1.4rem;font-weight:700;color:#e6f6f5;letter-spacing:.5px}
     .compra-extra{font-size:.85rem;color:#9fbfc6;line-height:1.5;margin-top:-10px}
+    .compra-form{
+      width:min(100%, 520px); display:grid; gap:10px; margin-top:10px;
+      background:rgba(8, 18, 32, 0.42); border:1px solid rgba(110,168,161,0.18);
+      border-radius:12px; padding:14px; box-shadow:0 10px 26px rgba(0,0,0,0.14);
+    }
+    .compra-form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .compra-field{display:flex;flex-direction:column;gap:6px; font-size:.76rem; color:#9fbfc6;}
+    .compra-field span{letter-spacing:.5px; text-transform:uppercase; font-size:.68rem; }
+    .compra-field input,
+    .compra-field select,
+    .compra-field textarea{
+      width:100%; border:1px solid rgba(144, 194, 190, 0.2); border-radius:10px; padding:10px 11px;
+      background:rgba(6, 12, 20, 0.7); color:#dfeef5; font:inherit; resize:vertical; min-height:42px;
+    }
+    .compra-field textarea{min-height:80px}
+    .compra-field input:focus,
+    .compra-field select:focus,
+    .compra-field textarea:focus{outline:none; border-color:rgba(149, 211, 206, 0.75); box-shadow:0 0 0 2px rgba(134, 208, 201, 0.14)}
+    .compra-field.full{grid-column:1 / -1}
     .btn-comprar{
       display:inline-block;padding:12px 30px;
       background:linear-gradient(90deg,#0f3f3b 0%,#0b2a28 100%);
@@ -906,6 +925,58 @@
           <div class="compra-info">
             <p class="compra-precio">Desde $16.000 ARS</p>
             <p class="compra-extra">Incluye stickers y 1 señalador con temática de personaje.</p>
+
+            <form id="checkout-form" class="compra-form" novalidate>
+              <div class="compra-form-row">
+                <label class="compra-field">
+                  <span>Nombre y apellido</span>
+                  <input id="customer_name" name="customer_name" type="text" placeholder="Tu nombre y apellido" required>
+                </label>
+                <label class="compra-field">
+                  <span>Email</span>
+                  <input id="customer_email" name="customer_email" type="email" placeholder="tuemail@email.com" required>
+                </label>
+              </div>
+
+              <div class="compra-form-row">
+                <label class="compra-field">
+                  <span>Teléfono / WhatsApp</span>
+                  <input id="customer_phone" name="customer_phone" type="tel" placeholder="11 5555-5555" required>
+                </label>
+                <label class="compra-field">
+                  <span>Modalidad</span>
+                  <select id="delivery_method" name="delivery_method" required>
+                    <option value="entrega_personalizada">Entrega personalizada</option>
+                    <option value="envio_personalizado">Envío personalizado</option>
+                  </select>
+                </label>
+              </div>
+
+              <div id="shipping-fields" class="compra-form-row" hidden>
+                <label class="compra-field">
+                  <span>Dirección</span>
+                  <input id="shipping_address" name="shipping_address" type="text" placeholder="Calle y número">
+                </label>
+                <label class="compra-field">
+                  <span>Ciudad / localidad</span>
+                  <input id="shipping_city" name="shipping_city" type="text" placeholder="Ciudad">
+                </label>
+                <label class="compra-field">
+                  <span>Provincia</span>
+                  <input id="shipping_province" name="shipping_province" type="text" placeholder="Provincia">
+                </label>
+                <label class="compra-field">
+                  <span>Código postal</span>
+                  <input id="shipping_postal_code" name="shipping_postal_code" type="text" placeholder="Código postal">
+                </label>
+              </div>
+
+              <label class="compra-field full">
+                <span>Comentario</span>
+                <textarea id="customer_note" name="customer_note" placeholder="Comentarios o detalles adicionales (opcional)"></textarea>
+              </label>
+            </form>
+
             <a id="compra-btn" class="btn-comprar" href="#" rel="noopener noreferrer">Comprar ahora</a>
             <p id="compra-error" class="compra-error" hidden>No pudimos conectar con el checkout. Probá de nuevo en unos segundos o escribinos por mail.</p>
           </div>
@@ -1481,8 +1552,61 @@
       const COMPRA_MAILTO = 'mailto:mateocastellano01@gmail.com?subject=' + encodeURIComponent('Quiero comprar un ejemplar de El Guardián de la Gravedad');
       const compraBtn = document.getElementById('compra-btn');
       const compraError = document.getElementById('compra-error');
+      const checkoutForm = document.getElementById('checkout-form');
+      const shippingFields = document.getElementById('shipping-fields');
+      const deliveryMethodSelect = document.getElementById('delivery_method');
+
+      function toggleShippingFields() {
+        if (!shippingFields || !deliveryMethodSelect) return;
+        const isShipping = deliveryMethodSelect.value === 'envio_personalizado';
+        shippingFields.hidden = !isShipping;
+      }
+
+      if (deliveryMethodSelect) {
+        deliveryMethodSelect.addEventListener('change', toggleShippingFields);
+        toggleShippingFields();
+      }
+
+      function getCheckoutPayload() {
+        const customerName = document.getElementById('customer_name')?.value.trim() || '';
+        const customerEmail = document.getElementById('customer_email')?.value.trim() || '';
+        const customerPhone = document.getElementById('customer_phone')?.value.trim() || '';
+        const deliveryMethod = deliveryMethodSelect ? deliveryMethodSelect.value : 'entrega_personalizada';
+        const shippingAddress = document.getElementById('shipping_address')?.value.trim() || '';
+        const shippingCity = document.getElementById('shipping_city')?.value.trim() || '';
+        const shippingProvince = document.getElementById('shipping_province')?.value.trim() || '';
+        const shippingPostalCode = document.getElementById('shipping_postal_code')?.value.trim() || '';
+        const customerNote = document.getElementById('customer_note')?.value.trim() || '';
+
+        if (!customerName || !customerEmail || !customerPhone || !deliveryMethod) {
+          throw new Error('Completá tu nombre, email, teléfono y modalidad de entrega.');
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+          throw new Error('Ingresá un email válido.');
+        }
+
+        if (deliveryMethod === 'envio_personalizado') {
+          if (!shippingAddress || !shippingCity || !shippingProvince || !shippingPostalCode) {
+            throw new Error('Para envío personalizado, completá dirección, ciudad, provincia y código postal.');
+          }
+        }
+
+        return {
+          customer_name: customerName,
+          customer_email: customerEmail,
+          customer_phone: customerPhone,
+          delivery_method: deliveryMethod,
+          shipping_address: deliveryMethod === 'envio_personalizado' ? shippingAddress : null,
+          shipping_city: deliveryMethod === 'envio_personalizado' ? shippingCity : null,
+          shipping_province: deliveryMethod === 'envio_personalizado' ? shippingProvince : null,
+          shipping_postal_code: deliveryMethod === 'envio_personalizado' ? shippingPostalCode : null,
+          customer_note: customerNote || null,
+        };
+      }
+
       if(compraBtn){
-        compraBtn.href = COMPRA_MAILTO; // fallback si JS falla o el backend no responde
+        compraBtn.href = COMPRA_MAILTO;
         compraBtn.addEventListener('click', function(event){
           event.preventDefault();
           if(compraBtn.getAttribute('aria-disabled') === 'true') return;
@@ -1492,24 +1616,40 @@
           compraBtn.textContent = 'Procesando...';
           if(compraError) compraError.hidden = true;
 
-          fetch(CHECKOUT_BACKEND_URL + '/api/create-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          })
-            .then(function(response){
-              if(!response.ok) throw new Error('create-order respondió ' + response.status);
-              return response.json();
+          try {
+            const payload = getCheckoutPayload();
+
+            fetch(CHECKOUT_BACKEND_URL + '/api/create-order', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
             })
-            .then(function(data){
-              if(!data || !data.checkout_url) throw new Error('Respuesta sin checkout_url');
-              window.location.href = data.checkout_url;
-            })
-            .catch(function(error){
-              console.error('No se pudo iniciar la compra:', error);
-              compraBtn.removeAttribute('aria-disabled');
-              compraBtn.textContent = textoOriginal;
-              if(compraError) compraError.hidden = false;
-            });
+              .then(function(response){
+                if(!response.ok) throw new Error('create-order respondió ' + response.status);
+                return response.json();
+              })
+              .then(function(data){
+                if(!data || !data.checkout_url) throw new Error('Respuesta sin checkout_url');
+                window.location.href = data.checkout_url;
+              })
+              .catch(function(error){
+                console.error('No se pudo iniciar la compra:', error);
+                compraBtn.removeAttribute('aria-disabled');
+                compraBtn.textContent = textoOriginal;
+                if(compraError) {
+                  compraError.textContent = error?.message || 'No pudimos conectar con el checkout. Probá de nuevo en unos segundos o escribinos por mail.';
+                  compraError.hidden = false;
+                }
+              });
+          } catch (error) {
+            console.error('Validación del formulario fallida:', error);
+            compraBtn.removeAttribute('aria-disabled');
+            compraBtn.textContent = textoOriginal;
+            if(compraError) {
+              compraError.textContent = error.message || 'Completá los datos requeridos.';
+              compraError.hidden = false;
+            }
+          }
         });
       }
 
