@@ -15,15 +15,14 @@
     body {
       font-family: 'Roboto Condensed', sans-serif;
       background: radial-gradient(circle at 20% 20%, #10233a 0%, #04080f 45%, #02060c 100%);
+      background-attachment: fixed;
       color: #cfdde7;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 18px;
+      display: block;
+      padding: 32px 18px 40px;
       word-break: normal;
       overflow-wrap: break-word;
       hyphens: none;
@@ -38,20 +37,30 @@
     body::before {
       content: "";
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       background-image: url("Ilustración El Guardian WEB.webp");
       background-repeat: no-repeat;
-      background-position: center;
+      background-position: center center;
       background-size: 85vw auto;
+      background-attachment: fixed;
       opacity: 0.18;
       z-index: -1;
       pointer-events: none;
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     body::after {
       content: "";
       position: fixed;
-      inset: -10% -6%;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: -2;
       pointer-events: none;
       opacity: 0.42;
@@ -62,6 +71,11 @@
         radial-gradient(circle at 35% 64%, rgba(180,220,255,0.3) 0 1px, transparent 2px),
         radial-gradient(circle at 92% 84%, rgba(240,247,255,0.34) 0 1px, transparent 2px);
       background-size: 380px 380px, 460px 460px, 520px 520px, 420px 420px, 560px 560px;
+      background-repeat: repeat;
+      background-attachment: fixed;
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
     }
 
     .page-shell {
@@ -69,6 +83,7 @@
       display: flex;
       justify-content: center;
       min-width: 0;
+      margin: 0 auto;
     }
 
     .purchase-card {
@@ -81,6 +96,7 @@
       padding: 28px 22px 22px;
       backdrop-filter: blur(4px);
       min-width: 0;
+      margin: 0 auto;
     }
 
     .eyebrow {
@@ -132,21 +148,15 @@
     }
 
     .book-cover {
-      width: 88px;
-      height: 116px;
+      width: 110px;
+      height: 136px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #163b4d, #0c1d2d 55%, #0d2321 100%);
-      display: grid;
-      place-items: center;
+      object-fit: cover;
+      display: block;
       border: 1px solid rgba(167, 220, 227, 0.28);
       box-shadow: 0 10px 22px rgba(0,0,0,0.18);
-      color: #e8f8f8;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-align: center;
-      padding: 10px;
-      font-size: 0.75rem;
-      line-height: 1.2;
+      background: linear-gradient(135deg, #163b4d, #0c1d2d 55%, #0d2321 100%);
+      flex-shrink: 0;
     }
 
     .book-meta {
@@ -318,10 +328,10 @@
 
       <div class="product-row">
         <div class="book">
-          <div class="book-cover">TOMO<br>N°1</div>
+          <img class="book-cover" src="COMPRA/Foto compra 1.png" alt="Portada del tomo 1 de El Guardián de la Gravedad" loading="eager" />
           <div class="book-meta">
             <strong>El Guardián de la Gravedad</strong>
-            <span>Edición con stickers y señalador</span>
+            <span>Tomo N°1 · Edición con stickers y señalador</span>
           </div>
         </div>
         <div class="price">Desde $16.000 ARS</div>
