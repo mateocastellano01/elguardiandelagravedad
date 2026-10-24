@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>BoB — Aventura | El Guardián de la Gravedad</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="stage">
+    <canvas id="c" aria-label="Juego de BoB"></canvas>
+
+    <div class="top-btns">
+      <button id="btn-pause" title="Pausa (Esc)" aria-label="Pausa">❚❚</button>
+      <button id="btn-mute" title="Sonido (M)" aria-label="Sonido" aria-pressed="false">🔊</button>
+      <button id="btn-full" title="Pantalla completa" aria-label="Pantalla completa">⛶</button>
+    </div>
+
+    <div class="touch" aria-hidden="true">
+      <div class="tgroup">
+        <button class="tbtn" data-act="left">◀</button>
+        <button class="tbtn" data-act="right">▶</button>
+      </div>
+      <div class="tgroup">
+        <button class="tbtn" data-act="down">▼</button>
+        <button class="tbtn big" data-act="jump">▲</button>
+      </div>
+    </div>
+
+    <div id="ov" class="ov">
+      <div class="panel" data-for="title">
+        <p class="kicker">El Guardián de la Gravedad</p>
+        <h1>BoB: Capital inundada</h1>
+        <p>Corré, deslizate y saltá de pared en pared por las ruinas de Buenos Aires. Las bajadas dan impulso: cuanto más rápido vas, más lejos llegás.</p>
+        <table class="keys">
+          <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Correr</td></tr>
+          <tr><td><kbd>↑</kbd> / <kbd>Espacio</kbd></td><td>Saltar (mantené para más altura)</td></tr>
+          <tr><td><kbd>↓</kbd></td><td>Deslizarse (conserva la velocidad)</td></tr>
+          <tr><td>Contra la pared</td><td>Saltá para impulsarte</td></tr>
+          <tr><td><kbd>R</kbd> · <kbd>Esc</kbd> · <kbd>M</kbd></td><td>Reintentar · Pausa · Sonido</td></tr>
+        </table>
+        <button id="btn-start" class="primary">Jugar</button>
+      </div>
+
+      <div class="panel" data-for="pause">
+        <h1>Pausa</h1>
+        <button id="btn-resume" class="primary">Continuar</button>
+        <button id="btn-restart">Reiniciar nivel</button>
+      </div>
+
+      <div class="panel" data-for="done">
+        <p class="kicker">Nivel completado</p>
+        <h1>¡Llegaste a la F.E.M.S.!</h1>
+        <table class="stats">
+          <tr><td>Tiempo</td><td id="r-time">–</td></tr>
+          <tr><td>Cafés</td><td id="r-beans">–</td></tr>
+          <tr><td>Caídas al agua</td><td id="r-deaths">–</td></tr>
+        </table>
+        <p id="r-best" class="best"></p>
+        <button id="btn-again" class="primary">Jugar de nuevo</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="physics.js"></script>
+  <script src="levels.js"></script>
+  <script src="backdrop.js"></script>
+  <script src="render.js"></script>
+  <script src="character.js"></script>
+  <script src="animations.js"></script>
+  <script src="sprites/manifest.js"></script>
+  <script src="sprites.js"></script>
+  <script src="animator.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
